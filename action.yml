@@ -19,9 +19,6 @@ inputs:
     description: Directory containing source files. Default `./`
     required: false
     default: './'
-  additional-message:
-    description: Custom text appended to comment.
-    required: false
   update-comment:
     description: Whether to update existing comment. Default `false`.
     required: false

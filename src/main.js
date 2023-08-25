@@ -12,7 +12,6 @@ const NEWLINE = /\r?\n/;
 function readAndSetInputs() {
   return {
     coverageFilesPattern: core.getInput('coverage-files'),
-    additionalMessage: core.getInput('additional-message'),
     updateComment: core.getInput('update-comment') === 'true',
     artifactName: core.getInput('artifact-name'),
     minimumCoverage: Number(core.getInput('minimum-coverage')) || 0,
@@ -37,11 +36,11 @@ function buildHeader(isMinimumCoverageReached) {
 }
 
 function buildMessageBody(params) {
-  const { header, summary, details, additionalMessage, isMinimumCoverageReached, errorMessage } = params;
+  const { header, summary, details, isMinimumCoverageReached, errorMessage } = params;
 
   return `${header}<pre>${summary}\n\nChanged files coverage rate: ${details}</pre>\n\n${
     isMinimumCoverageReached ? '' : `:no_entry: ${errorMessage}`
-  }${additionalMessage ? `\n\n${additionalMessage}` : ''}`;
+  }`;
 }
 
 function runningInPullRequest() {
@@ -86,8 +85,7 @@ function roundToOneDecimalPlace(num) {
 }
 
 async function run() {
-  const { coverageFilesPattern, additionalMessage, updateComment, artifactName, minimumCoverage, gitHubToken } =
-    readAndSetInputs();
+  const { coverageFilesPattern, updateComment, artifactName, minimumCoverage, gitHubToken } = readAndSetInputs();
 
   try {
     const tmpPath = `${process.env.GITHUB_WORKSPACE}/lcov-tmp-dir`;
@@ -106,7 +104,6 @@ async function run() {
         header: buildHeader(isMinimumCoverageReached),
         summary: await summarize(mergedCoverageFile),
         details: await detail(mergedCoverageFile, octokit),
-        additionalMessage,
         isMinimumCoverageReached,
         errorMessage,
       });

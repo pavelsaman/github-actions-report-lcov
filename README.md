@@ -15,7 +15,6 @@ This GitHub Action allows you to report code coverage from LCOV files. This acti
 - `minimum-coverage` (optional): Minimum % coverage to pass check. Default `0`.
 - `github-token` (optional): GitHub token to comment on PR.
 - `working-directory` (optional): Directory containing source files. Default `./`
-- `additional-message` (optional): Custom text appended to comment.
 - `update-comment` (optional): Whether to update existing comment. Default `false`.
 - `list-full-paths` (optional): Whether to list full file paths in details. Default `true`.
 
