@@ -12,8 +12,7 @@
     "format:check": "rome format src/*.js",
     "build:pre": "esbuild --bundle src/pre.js --outfile=dist/pre/index.js --sourcemap --minify --platform=node --target=node16",
     "build:main": "esbuild --bundle src/main.js --outfile=dist/main/index.js --sourcemap --minify --platform=node --target=node16",
-    "build:post": "esbuild --bundle src/post.js --outfile=dist/post/index.js --sourcemap --minify --platform=node --target=node16",
-    "prepare": "npm run format && npm run lint && npm run build:pre && npm run build:main && npm run build:post"
+    "prepare": "npm run format && npm run lint && npm run build:pre && npm run build:main"
   },
   "repository": {
     "type": "git",
