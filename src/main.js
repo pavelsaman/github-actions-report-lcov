@@ -10,11 +10,10 @@ const fs = require('fs');
 function readAndSetInputs() {
   return {
     coverageFilesPattern: core.getInput('coverage-files'),
-    titlePrefix: core.getInput('title-prefix'),
     additionalMessage: core.getInput('additional-message'),
     updateComment: core.getInput('update-comment') === 'true',
     artifactName: core.getInput('artifact-name'),
-    minimumCoverage: Number(core.getInput('minimum-coverage')),
+    minimumCoverage: Number(core.getInput('minimum-coverage') || 0),
     gitHubToken: core.getInput('github-token'),
     workingDirectory: core.getInput('working-directory') || './',
     listFullPaths: core.getInput('list-full-paths') === 'true',
@@ -29,26 +28,18 @@ function sha() {
   };
 }
 
-function buildHeader(titlePrefix) {
-  return `### ${
-    titlePrefix ? `${titlePrefix} ` : ''
-  }[LCOV](https://github.com/marketplace/actions/report-lcov) of commit`;
+function buildHeader(isMinimumCoverageReached) {
+  return `### ${isMinimumCoverageReached ? '' : ':x:'} Code coverage of commit [<code>${sha().short}</code>](${
+    github.context.payload.pull_request.number
+  }/commits/${sha().full})\n\n`;
 }
 
 function buildMessageBody(params) {
   const { header, summary, details, additionalMessage, isMinimumCoverageReached, errorMessage } = params;
 
-  let body = `${header} [<code>${sha().short}</code>](${github.context.payload.pull_request.number}/commits/${
-    sha().full
-  }) during [${github.context.workflow} #${github.context.runNumber}](../actions/runs/${
-    github.context.runId
-  })\n<pre>${summary}\n\nFiles changed coverage rate:${details}</pre>\n${additionalMessage}`;
-
-  if (!isMinimumCoverageReached) {
-    body += `\n:no_entry: ${errorMessage}`;
-  }
-
-  return body;
+  return `${header}<pre>${summary}\n\nFiles changed coverage rate:${details}</pre>\n\n${
+    isMinimumCoverageReached ? '' : `:no_entry: ${errorMessage}`
+  }${additionalMessage}`;
 }
 
 function runningInPullRequest() {
@@ -89,15 +80,8 @@ async function commentOnPR(params) {
 }
 
 async function run() {
-  const {
-    coverageFilesPattern,
-    titlePrefix,
-    additionalMessage,
-    updateComment,
-    artifactName,
-    minimumCoverage,
-    gitHubToken,
-  } = readAndSetInputs();
+  const { coverageFilesPattern, additionalMessage, updateComment, artifactName, minimumCoverage, gitHubToken } =
+    readAndSetInputs();
 
   try {
     const tmpPath = `${process.env.GITHUB_WORKSPACE}/lcov-tmp-dir`;
@@ -111,13 +95,13 @@ async function run() {
 
     const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpPath);
     const totalCoverage = lcovTotal(mergedCoverageFile);
-    const errorMessage = `The code coverage is too low: ${totalCoverage}. Expected at least ${minimumCoverage}.`;
+    const errorMessage = `Code coverage: ${totalCoverage}. Expected at least ${minimumCoverage}.`;
     const isMinimumCoverageReached = totalCoverage >= minimumCoverage;
 
     if (gitHubToken && runningInPullRequest()) {
       const octokit = github.getOctokit(gitHubToken);
       const body = buildMessageBody({
-        header: buildHeader(titlePrefix),
+        header: buildHeader(isMinimumCoverageReached),
         summary: await summarize(mergedCoverageFile),
         details: await detail(mergedCoverageFile, octokit),
         additionalMessage,
@@ -128,7 +112,7 @@ async function run() {
       commentOnPR({
         octokit,
         updateComment,
-        header: buildHeader(titlePrefix),
+        header: 'Code coverage',
         body,
       });
     } else {
