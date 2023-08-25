@@ -31,7 +31,14 @@ inputs:
       'Set to `true` to update the previous code coverage comment if such exists.
       When set to `false`, a new comment is always created. Optional. Default: `false`'
     required: false
-    default: "false"
+    default: 'false'
+  list-full-paths:
+    description: |
+      Whether or not to list full paths for reported files
+      Required: `false`
+      Default: `true`
+    required: false
+    default: 'true'
 outputs:
   total-coverage:
       description: 'The total coverage from scanned files.'

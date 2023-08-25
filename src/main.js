@@ -17,6 +17,7 @@ function readAndSetInputs() {
     minimumCoverage: Number(core.getInput('minimum-coverage')),
     gitHubToken: core.getInput('github-token'),
     workingDirectory: core.getInput('working-directory') || './',
+    listFullPaths: core.getInput('list-full-paths') === 'true',
   };
 }
 
@@ -218,7 +219,9 @@ async function detail(coverageFile, octokit) {
     },
   };
 
-  await exec.exec('lcov', ['--list', coverageFile, '--list-full-path', ...getCommonLcovArgs()], options);
+  const { listFullPaths } = readAndSetInputs();
+  const args = listFullPaths ? ['--list-full-path'] : [];
+  await exec.exec('lcov', ['--list', coverageFile, ...args, ...getCommonLcovArgs()], options);
   let lines = output.trim().split(/\r?\n/);
 
   // remove first line and last two lines
