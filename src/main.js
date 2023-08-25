@@ -95,9 +95,7 @@ async function run() {
 
     const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpPath);
     const totalCoverageRounded = Math.round(lcovTotal(mergedCoverageFile) * 10) / 10;
-    const errorMessage = `Code coverage: **${Math.round(totalCoverageRounded).toFixed(
-      1,
-    )}** %. Expected at least **${minimumCoverage}** %.`;
+    const errorMessage = `Code coverage: **${totalCoverageRounded}** %. Expected at least **${minimumCoverage}** %.`;
     const isMinimumCoverageReached = totalCoverageRounded >= minimumCoverage;
 
     if (gitHubToken && runningInPullRequest()) {
