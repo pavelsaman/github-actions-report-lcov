@@ -37,7 +37,7 @@ function buildHeader(isMinimumCoverageReached) {
 function buildMessageBody(params) {
   const { header, summary, details, additionalMessage, isMinimumCoverageReached, errorMessage } = params;
 
-  return `${header}<pre>${summary}\n\nChanged files coverage rate:${details}</pre>\n\n${
+  return `${header}<pre>${summary}\n\nChanged files coverage rate: ${details}</pre>\n\n${
     isMinimumCoverageReached ? '' : `:no_entry: ${errorMessage}`
   }${additionalMessage}`;
 }
@@ -234,7 +234,7 @@ async function detail(coverageFile, octokit) {
   });
 
   const onlyHeaderRemains = lines.length === 3;
-  return onlyHeaderRemains ? ' n/a' : `\n  ${lines.join('\n  ')}`;
+  return onlyHeaderRemains ? 'n/a' : `\n  ${lines.join('\n  ')}`;
 }
 
 run();
