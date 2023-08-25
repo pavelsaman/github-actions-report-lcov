@@ -34,6 +34,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      # if running on Windows, please install `lcov` here
+
       - name: Report code coverage
         uses: pavelsaman/github-actions-report-lcov@v4
         with:
