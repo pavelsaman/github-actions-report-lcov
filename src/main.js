@@ -39,7 +39,7 @@ function buildMessageBody(params) {
 
   return `${header}<pre>${summary}\n\nChanged files coverage rate: ${details}</pre>\n\n${
     isMinimumCoverageReached ? '' : `:no_entry: ${errorMessage}`
-  }${additionalMessage}`;
+  }${additionalMessage ? `\n\n${additionalMessage}` : ''}`;
 }
 
 function runningInPullRequest() {
