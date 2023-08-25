@@ -89,10 +89,6 @@ async function run() {
     const globber = await glob.create(coverageFilesPattern);
     const coverageFiles = await globber.glob();
 
-    if (artifactName) {
-      await generateHTMLAndUpload(artifactName, coverageFiles, tmpPath);
-    }
-
     const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpPath);
     const totalCoverageRounded = Math.round(lcovTotal(mergedCoverageFile) * 10) / 10;
     const errorMessage = `Code coverage: **${totalCoverageRounded}** %. Expected at least **${minimumCoverage}** %.`;
@@ -115,6 +111,9 @@ async function run() {
         header: 'Code coverage',
         body,
       });
+      if (artifactName) {
+        generateHTMLAndUpload(coverageFiles, artifactName, tmpPath);
+      }
     } else {
       core.info('code coverage: no `github-token` provided. Skipping writing a comment to the PR.');
     }
@@ -128,7 +127,7 @@ async function run() {
   }
 }
 
-async function generateHTMLAndUpload(artifactName, coverageFiles, tmpPath) {
+async function generateHTMLAndUpload(coverageFiles, artifactName, tmpPath) {
   const { workingDirectory } = readAndSetInputs();
   const artifactPath = path.resolve(tmpPath, 'html').trim();
 
