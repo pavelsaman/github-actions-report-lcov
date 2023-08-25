@@ -13,9 +13,9 @@ function readAndSetInputs() {
     additionalMessage: core.getInput('additional-message'),
     updateComment: core.getInput('update-comment') === 'true',
     artifactName: core.getInput('artifact-name'),
-    minimumCoverage: Number(core.getInput('minimum-coverage') || 0),
+    minimumCoverage: Number(core.getInput('minimum-coverage')),
     gitHubToken: core.getInput('github-token'),
-    workingDirectory: core.getInput('working-directory') || './',
+    workingDirectory: core.getInput('working-directory'),
     listFullPaths: core.getInput('list-full-paths') === 'true',
   };
 }

@@ -9,36 +9,44 @@ inputs:
     required: true
   artifact-name:
     description: |
-      The GitHub artifact name of the generated HTML report.
-      Optional. Default: `` (Do not create a HTML report and do not upload anything.)
+      The GitHub artifact name of the generated HTML report. If not provided, do not create a HTML report and do not upload anything.
+      Optional.
+    required: false
   minimum-coverage:
-    description: 'The minimum coverage to pass the check. Optional. Default: `0` (always passes)'
+    description: 'The minimum coverage to pass the check.Optional. Default: `0` (always passes)'
+    required: false
     default: '0'
   github-token:
     description: |
-      'Set the GitHub token to have the action comment the coverage summary in the pull request.
-      This token is provided by Actions, you do not need to create your own token. Optional. Default: ``'
+      Set the GitHub token to have the action comment the coverage summary in the pull request.
+      This token is provided by Actions, you do not need to create your own token.
+      Optional.
+    required: false
   working-directory:
     description: 'The working directory containing the source files referenced in the LCOV files. Optional. Default: `./`'
+    required: false
+    default: './'
   additional-message:
-    description: 'Custom text appended to the code coverage comment in the pull request. Optional. Default: ``'
+    description: 'Custom text appended to the code coverage comment. Optional.'
     required: false
   update-comment:
     description: |
       Set to `true` to update the previous code coverage comment if such exists.
-      When set to `false`, a new comment is always created. Optional. Default: `false`
+      When set to `false`, a new comment is always created.
+      Optional.
+      Default: `false`
     required: false
     default: 'false'
   list-full-paths:
     description: |
-      Whether or not to list full paths for reported files
-      Required: `false`
+      Whether or not to list full paths for reported files. Long filenames may not fit on GitHub PR page.
+      Optional.
       Default: `true`
     required: false
     default: 'true'
 outputs:
   total-coverage:
-      description: 'The total coverage from scanned files.'
+      description: 'Total coverage from scanned files.'
 
 runs:
   using: 'node16'
