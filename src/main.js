@@ -126,7 +126,7 @@ async function run() {
 
     core.setOutput('total-coverage', totalCoverageRounded);
     if (!isMinimumCoverageReached) {
-      core.setFailed(errorMessage.replace('*', ''));
+      core.setFailed(errorMessage.replace(/\*/g, ''));
     }
   } catch (error) {
     core.setFailed(error.message);
