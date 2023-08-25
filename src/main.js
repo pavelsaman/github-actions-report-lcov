@@ -179,7 +179,6 @@ async function mergeCoverages(coverageFiles, tmpPath) {
 
 async function summarize(mergedCoverageFile) {
   let output = '';
-
   const options = {
     listeners: {
       stdout: (data) => {
@@ -192,12 +191,8 @@ async function summarize(mergedCoverageFile) {
   };
 
   await exec.exec('lcov', ['--summary', mergedCoverageFile, ...getCommonLcovArgs()], options);
-
-  const lines = output.trim().split(/\r?\n/);
-
-  lines.shift(); // Removes "Reading tracefile..."
-
-  return lines.join('\n');
+  // remove first line with shift()
+  return output.trim().split(/\r?\n/).shift().join('\n');
 }
 
 async function getChangedFilenames(octokitInstance) {
@@ -212,7 +207,6 @@ async function getChangedFilenames(octokitInstance) {
 
 async function detail(coverageFile, octokit) {
   let output = '';
-
   const options = {
     listeners: {
       stdout: (data) => {
@@ -225,12 +219,13 @@ async function detail(coverageFile, octokit) {
   };
 
   await exec.exec('lcov', ['--list', coverageFile, '--list-full-path', ...getCommonLcovArgs()], options);
-
   let lines = output.trim().split(/\r?\n/);
 
-  lines.shift(); // Removes "Reading tracefile..."
-  lines.pop(); // Removes "Total..."
-  lines.pop(); // Removes "========"
+  // remove first line and last two lines
+  // they do not provide coverage info, we want to remove these lines
+  lines.shift();
+  lines.pop();
+  lines.pop();
 
   const changedFiles = await getChangedFilenames(octokit);
   lines = lines.filter((line, index) => {
