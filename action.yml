@@ -5,43 +5,31 @@ description: 'Report code coverage from LCOV files'
 author: 'Zennon Gosalvez'
 inputs:
   coverage-files:
-    description: 'The coverage files to scan. For example: `coverage/lcov.*.info`'
+    description: Coverage files to scan (e.g. `coverage/lcov.*.info`)
     required: true
   artifact-name:
-    description: |
-      The GitHub artifact name of the generated HTML report. If not provided, do not create a HTML report and do not upload anything.
-      Optional.
+    description: Name of generated coverage report artifact. Default is no artifact created.
     required: false
   minimum-coverage:
-    description: 'The minimum coverage to pass the check.Optional. Default: `0` (always passes)'
+    description: Minimum % coverage to pass check. Default `0`.
     required: false
     default: '0'
   github-token:
-    description: |
-      Set the GitHub token to have the action comment the coverage summary in the pull request.
-      This token is provided by Actions, you do not need to create your own token.
-      Optional.
+    description: GitHub token to comment on PR.
     required: false
   working-directory:
-    description: 'The working directory containing the source files referenced in the LCOV files. Optional. Default: `./`'
+    description: Directory containing source files. Default `./`
     required: false
     default: './'
   additional-message:
-    description: 'Custom text appended to the code coverage comment. Optional.'
+    description: Custom text appended to comment.
     required: false
   update-comment:
-    description: |
-      Set to `true` to update the previous code coverage comment if such exists.
-      When set to `false`, a new comment is always created.
-      Optional.
-      Default: `false`
+    description: Whether to update existing comment. Default `false`.
     required: false
     default: 'false'
   list-full-paths:
-    description: |
-      Whether or not to list full paths for reported files. Long filenames may not fit on GitHub PR page.
-      Optional.
-      Default: `true`
+    description: Whether to list full file paths in details. Default `true`.
     required: false
     default: 'true'
 outputs:
