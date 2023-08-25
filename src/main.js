@@ -224,8 +224,8 @@ async function detail(coverageFile, octokit) {
   const { listFullPaths } = readAndSetInputs();
   const args = listFullPaths ? ['--list-full-path'] : [];
   await exec.exec('lcov', ['--list', coverageFile, ...args, ...getCommonLcovArgs()], options);
-  let lines = output.trim().split(/\r?\n/);
 
+  let lines = output.trim().split(/\r?\n/);
   // remove debug info
   lines.shift();
   lines.pop();

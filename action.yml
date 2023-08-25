@@ -1,16 +1,16 @@
 # https://github.com/actions/javascript-action
 
 name: 'Report LCOV'
-description: 'Report the code coverage from LCOV files'
+description: 'Report code coverage from LCOV files'
 author: 'Zennon Gosalvez'
 inputs:
   coverage-files:
-    description: 'The coverage files to scan. For example, `coverage/lcov.*.info`'
+    description: 'The coverage files to scan. For example: `coverage/lcov.*.info`'
     required: true
   artifact-name:
     description: |
-      'The GitHub artifact name of the generated HTML report. For example, `code-coverage-report`.
-      _Note:_ When downloading, it will be extracted in an `html` directory. Optional. Default: `` (Skips uploading of artifacts)'
+      The GitHub artifact name of the generated HTML report.
+      Optional. Default: `` (Do not create a HTML report and do not upload anything.)
   minimum-coverage:
     description: 'The minimum coverage to pass the check. Optional. Default: `0` (always passes)'
     default: '0'
@@ -28,8 +28,8 @@ inputs:
     required: false
   update-comment:
     description: |
-      'Set to `true` to update the previous code coverage comment if such exists.
-      When set to `false`, a new comment is always created. Optional. Default: `false`'
+      Set to `true` to update the previous code coverage comment if such exists.
+      When set to `false`, a new comment is always created. Optional. Default: `false`
     required: false
     default: 'false'
   list-full-paths:
