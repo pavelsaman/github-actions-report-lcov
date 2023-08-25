@@ -30,7 +30,7 @@ function sha() {
 }
 
 function buildHeader(isMinimumCoverageReached) {
-  return `### ${isMinimumCoverageReached ? '' : ':no_entry:'} Code coverage of commit [<code>${sha().short}</code>](${
+  return `## ${isMinimumCoverageReached ? '' : ':no_entry:'} Code coverage of commit [<code>${sha().short}</code>](${
     github.context.payload.pull_request.number
   }/commits/${sha().full})\n\n`;
 }
