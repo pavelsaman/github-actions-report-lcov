@@ -81,6 +81,10 @@ async function commentOnPR(params) {
   prAction(data);
 }
 
+function roundToOneDecimalPlace(num) {
+  return Math.round(num * 10) / 10;
+}
+
 async function run() {
   const { coverageFilesPattern, additionalMessage, updateComment, artifactName, minimumCoverage, gitHubToken } =
     readAndSetInputs();
@@ -92,7 +96,7 @@ async function run() {
     const coverageFiles = await globber.glob();
 
     const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpPath);
-    const totalCoverageRounded = Math.round(lcovTotal(mergedCoverageFile) * 10) / 10;
+    const totalCoverageRounded = roundToOneDecimalPlace(lcovTotal(mergedCoverageFile));
     const errorMessage = `Code coverage: **${totalCoverageRounded}** %. Expected at least **${minimumCoverage}** %.`;
     const isMinimumCoverageReached = totalCoverageRounded >= minimumCoverage;
 
