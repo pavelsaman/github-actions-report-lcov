@@ -4,7 +4,8 @@
     "EditorConfig.EditorConfig",
     "redhat.vscode-yaml",
     "DavidAnson.vscode-markdownlint",
-    "jasonnutter.vscode-codeowners"
+    "jasonnutter.vscode-codeowners",
+    "johnpapa.vscode-peacock"
   ],
   "unwantedRecommendations": []
 }
