@@ -30,6 +30,7 @@ jobs:
   coverage_report:
     name: Generate coverage report
     needs: test-job
+    # Linux and macOS are supported
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -43,7 +44,9 @@ jobs:
           update-comment: 'true'
 ```
 
-**Note**: Only the `pull_request` and `pull_request_target` events are supported. This action does nothing when triggered by other event types.
+### Limitations
+
+The action works out of the box with Linux and macOS runners. If you want to use it on Windows runners, please install `lcov` before running this action in a workflow.
 
 ## Example comments
 
