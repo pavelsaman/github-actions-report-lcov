@@ -24,6 +24,7 @@ For more information on these inputs, see the [Workflow syntax for GitHub Action
 - `title-prefix`: A prefix before the title "LCOV of commit...". Optional. Default: ``
 - `additional-message`: Custom text appended to the code coverage comment in the pull request. Optional. Default: ``
 - `update-comment`: Set to `true` to update the previous code coverage comment if such exists. When set to `false`, a new comment is always created. Optional. Default: `false`
+- `list-full-paths`: Whether to list full paths of files reported in changed files detailed section. Long filenames may not fit on GitHub PR page. Optional input. Default: `true`
 
 ### Outputs
 
