@@ -94,9 +94,11 @@ async function run() {
     }
 
     const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpPath);
-    const totalCoverage = lcovTotal(mergedCoverageFile);
-    const errorMessage = `Code coverage: **${totalCoverage}** %. Expected at least **${minimumCoverage}** %.`;
-    const isMinimumCoverageReached = totalCoverage >= minimumCoverage;
+    const totalCoverageRounded = Math.round(lcovTotal(mergedCoverageFile) * 10) / 10;
+    const errorMessage = `Code coverage: **${Math.round(totalCoverageRounded).toFixed(
+      1,
+    )}** %. Expected at least **${minimumCoverage}** %.`;
+    const isMinimumCoverageReached = totalCoverageRounded >= minimumCoverage;
 
     if (gitHubToken && runningInPullRequest()) {
       const octokit = github.getOctokit(gitHubToken);
@@ -122,7 +124,7 @@ async function run() {
       );
     }
 
-    core.setOutput('total-coverage', totalCoverage);
+    core.setOutput('total-coverage', totalCoverageRounded);
     if (!isMinimumCoverageReached) {
       core.setFailed(errorMessage.replace('*', ''));
     }
