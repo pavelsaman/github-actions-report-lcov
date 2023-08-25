@@ -29,7 +29,7 @@ function sha() {
 }
 
 function buildHeader(isMinimumCoverageReached) {
-  return `### ${isMinimumCoverageReached ? '' : ':x:'} Code coverage of commit [<code>${sha().short}</code>](${
+  return `### ${isMinimumCoverageReached ? '' : ':no_entry:'} Code coverage of commit [<code>${sha().short}</code>](${
     github.context.payload.pull_request.number
   }/commits/${sha().full})\n\n`;
 }
@@ -95,7 +95,7 @@ async function run() {
 
     const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpPath);
     const totalCoverage = lcovTotal(mergedCoverageFile);
-    const errorMessage = `Code coverage: ${totalCoverage}. Expected at least ${minimumCoverage}.`;
+    const errorMessage = `Code coverage: **${totalCoverage}** %. Expected at least **${minimumCoverage}** %.`;
     const isMinimumCoverageReached = totalCoverage >= minimumCoverage;
 
     if (gitHubToken && runningInPullRequest()) {
