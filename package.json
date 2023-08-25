@@ -25,6 +25,7 @@
     "coverage"
   ],
   "author": "Zennon Gosalvez",
+  "maintainers": ["Pavel Saman"],
   "license": "MIT",
   "dependencies": {
     "@actions/artifact": "^1.1.1",
