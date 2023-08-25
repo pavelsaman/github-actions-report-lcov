@@ -3,7 +3,8 @@
     "rome.rome",
     "EditorConfig.EditorConfig",
     "redhat.vscode-yaml",
-    "DavidAnson.vscode-markdownlint"
+    "DavidAnson.vscode-markdownlint",
+    "jasonnutter.vscode-codeowners"
   ],
   "unwantedRecommendations": []
 }
