@@ -16,7 +16,7 @@ function run() {
     const lcovVersion = execSync('lcov --version', { encoding: 'utf-8' });
     console.log(lcovVersion);
   } catch (error) {
-    core.setFailed(error.message);
+    core.setFailed(`code coverage gh action: ${error.message}`);
   }
 }
 

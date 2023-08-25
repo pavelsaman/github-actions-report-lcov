@@ -116,10 +116,7 @@ async function run() {
         body,
       });
     } else {
-      core.info('github-token received is empty. Skipping writing a comment in the PR.');
-      core.info(
-        'Note: This could happen even if github-token was provided in workflow file. It could be because your github token does not have permissions for commenting in target repo.',
-      );
+      core.info('code coverage: no `github-token` provided. Skipping writing a comment to the PR.');
     }
 
     core.setOutput('total-coverage', totalCoverageRounded);
@@ -127,7 +124,7 @@ async function run() {
       core.setFailed(errorMessage.replace(/\*/g, ''));
     }
   } catch (error) {
-    core.setFailed(error.message);
+    core.setFailed(`code coverage gh action: ${error.message}`);
   }
 }
 
