@@ -192,8 +192,10 @@ async function summarize(mergedCoverageFile) {
   };
 
   await exec.exec('lcov', ['--summary', mergedCoverageFile, ...getCommonLcovArgs()], options);
-  // remove first line with shift()
-  return output.trim().split(/\r?\n/).shift().join('\n');
+
+  const lines = output.trim().split(/\r?\n/);
+  lines.shift(); // remove debug info
+  return lines.join('\n');
 }
 
 async function getChangedFilenames(octokitInstance) {
@@ -224,8 +226,7 @@ async function detail(coverageFile, octokit) {
   await exec.exec('lcov', ['--list', coverageFile, ...args, ...getCommonLcovArgs()], options);
   let lines = output.trim().split(/\r?\n/);
 
-  // remove first line and last two lines
-  // they do not provide coverage info, we want to remove these lines
+  // remove debug info
   lines.shift();
   lines.pop();
   lines.pop();
