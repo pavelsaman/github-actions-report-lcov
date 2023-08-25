@@ -7,6 +7,8 @@ const lcovTotal = require('lcov-total');
 const path = require('path');
 const fs = require('fs');
 
+const NEWLINE = /\r?\n/;
+
 function readAndSetInputs() {
   return {
     coverageFilesPattern: core.getInput('coverage-files'),
@@ -173,7 +175,7 @@ async function summarize(mergedCoverageFile) {
 
   await exec.exec('lcov', ['--summary', mergedCoverageFile, ...getCommonLcovArgs()], options);
 
-  const lines = output.trim().split(/\r?\n/);
+  const lines = output.trim().split(NEWLINE);
   lines.shift(); // remove debug info
   return lines.join('\n');
 }
@@ -205,7 +207,7 @@ async function detail(coverageFile, octokit) {
   const args = listFullPaths ? ['--list-full-path'] : [];
   await exec.exec('lcov', ['--list', coverageFile, ...args, ...getCommonLcovArgs()], options);
 
-  let lines = output.trim().split(/\r?\n/);
+  let lines = output.trim().split(NEWLINE);
   // remove debug info
   lines.shift();
   lines.pop();
