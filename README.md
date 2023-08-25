@@ -47,5 +47,10 @@ jobs:
 
 ## Example comments
 
+When minimum coverage was reached or no minimum coverage was enforced:
+
 ![screenshot](assets/comment-ok.png)
+
+When a check for minimum coverage fails:
+
 ![screenshot](assets/comment-failure.png)
