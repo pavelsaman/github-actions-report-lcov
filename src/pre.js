@@ -13,7 +13,8 @@ function run() {
       execSync('brew install lcov');
     }
 
-    console.log('lcov installed successfully');
+    const lcovVersion = execSync('lcov --version', { encoding: 'utf-8' });
+    console.log(lcovVersion);
   } catch (error) {
     core.setFailed(error.message);
   }
