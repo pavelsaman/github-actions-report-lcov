@@ -19,6 +19,7 @@
     "url": "git+https://github.com/zgosalvez/github-actions-report-lcov.git"
   },
   "keywords": [
+    "github",
     "actions",
     "node",
     "lcov",
@@ -28,6 +29,9 @@
   "maintainers": [
     "Pavel Saman"
   ],
+  "engines": {
+    "node": ">=16"
+  },
   "license": "MIT",
   "dependencies": {
     "@actions/artifact": "^1.1.1",
