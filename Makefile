@@ -1,4 +1,4 @@
-.PHONY: install-git-hooks install lint lint-check format format-check build-pre build-main prepare all clean clean-all
+.PHONY: install-git-hooks install lint lint-check format format-check build-pre build-main build-all all clean clean-all
 
 install-git-hooks: 
 	npm run install:git:hooks
@@ -24,8 +24,8 @@ build-pre:
 build-main:
 	npm run build:main
 
-prepare: 
-	npm run prepare
+build-all: 
+	npm run build:all
 
 all: install prepare
 

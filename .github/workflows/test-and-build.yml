@@ -1,0 +1,51 @@
+
+name: Test and Build
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+
+jobs:
+  test-and-build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
+          check-latest: true
+
+      - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Build
+        run: npm run build:pre && npm run build:main
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Check linting
+        run: npm run lint:check
