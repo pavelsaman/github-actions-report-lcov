@@ -1,52 +1,11 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import * as artifact from '@actions/artifact';
-import * as exec from '@actions/exec';
-import * as glob from '@actions/glob';
-import * as path from 'path';
 import lcovTotal from 'lcov-total';
-import fs from 'fs';
 import { config, inputs } from './config';
-import { getChangedFilenames, commentOnPR, sha } from './github';
-
-function buildHeader(isMinimumCoverageReached) {
-  return `## ${isMinimumCoverageReached ? '' : ':no_entry:'} Code coverage of commit [<code>${sha().short}</code>](${
-    github.context.payload.pull_request.number
-  }/commits/${sha().full})\n\n`;
-}
-
-function buildMessageBody(params) {
-  const { header, summary, details, isMinimumCoverageReached, errorMessage } = params;
-
-  return `${header}<pre>${summary}\n\nChanged files coverage rate: ${details}</pre>\n\n${
-    isMinimumCoverageReached ? '' : `:no_entry: ${errorMessage}`
-  }`;
-}
-
-function runningInPullRequest() {
-  const allowedGitHubEvents = ['pull_request', 'pull_request_target'];
-  return allowedGitHubEvents.includes(github.context.eventName);
-}
-
-function roundToOneDecimalPlace(num) {
-  return Math.round(num * 10) / 10;
-}
-
-async function listFiles(path) {
-  const globber = await glob.create(path, { followSymbolicLinks: false, matchDirectories: false });
-  return await globber.glob();
-}
-
-function createTempDir() {
-  try {
-    const tmpPath = `${process.env.GITHUB_WORKSPACE}/lcov-tmp-dir`;
-    fs.mkdirSync(tmpPath);
-    return tmpPath;
-  } catch (error) {
-    core.error(`${config.action_msg_prefix} creating a temp dir failed with: ${error.message}`);
-    process.exit(1);
-  }
-}
+import { commentOnPR } from './github';
+import { listFiles } from './utils';
+import { mergeCoverages, detail, summarize, generateHTMLAndUpload } from './lcov';
+import { createTempDir, roundToOneDecimalPlace, runningInPullRequest, buildHeader, buildMessageBody } from './utils';
 
 async function run() {
   const coverageFiles = await listFiles(inputs.coverageFilesPattern);
@@ -94,93 +53,6 @@ async function run() {
   } catch (error) {
     core.setFailed(`${config.action_msg_prefix} ${error.message}`);
   }
-}
-
-async function generateHTMLAndUpload(coverageFiles, artifactName, tmpPath) {
-  const artifactPath = path.resolve(tmpPath, 'html').trim();
-
-  const args = [...coverageFiles, ...config.common_lcov_args, '--output-directory', artifactPath];
-  await exec.exec('genhtml', args, { cwd: inputs.workingDirectory });
-
-  const htmlFiles = await listFiles(`${artifactPath}/**`);
-  artifact.create().uploadArtifact(artifactName, htmlFiles, artifactPath, { continueOnError: false });
-}
-
-async function mergeCoverages(coverageFiles, tmpPath) {
-  const mergedCoverageFile = `${tmpPath}/merged-lcov.info`;
-  const args = [];
-
-  for (const coverageFile of coverageFiles) {
-    args.push('--add-tracefile');
-    args.push(coverageFile);
-  }
-
-  args.push('--output-file');
-  args.push(mergedCoverageFile);
-
-  await exec.exec('lcov', [...args, ...config.common_lcov_args]);
-
-  return mergedCoverageFile;
-}
-
-async function summarize(mergedCoverageFile) {
-  let output = '';
-  const options = {
-    listeners: {
-      stdout: (data) => {
-        output += data.toString();
-      },
-      stderr: (data) => {
-        output += data.toString();
-      },
-    },
-  };
-
-  await exec.exec('lcov', ['--summary', mergedCoverageFile, ...config.common_lcov_args], options);
-
-  const lines = output.trim().split(config.newline);
-  lines.shift(); // remove debug info
-  return lines.join('\n');
-}
-
-function lineRefersToChangedFile(lineWithFilename, changedFiles) {
-  return changedFiles.some((changedFile) => lineWithFilename.startsWith(changedFile));
-}
-
-async function detail(coverageFile, octokit) {
-  let output = '';
-  const options = {
-    listeners: {
-      stdout: (data) => {
-        output += data.toString();
-      },
-      stderr: (data) => {
-        output += data.toString();
-      },
-    },
-  };
-
-  const args = inputs.listFullPaths ? ['--list-full-path'] : [];
-  await exec.exec('lcov', ['--list', coverageFile, ...args, ...config.common_lcov_args], options);
-
-  let lines = output.trim().split(config.newline);
-  // remove debug info
-  lines.shift();
-  lines.pop();
-  lines.pop();
-
-  const changedFiles = await getChangedFilenames(octokit);
-  lines = lines.filter((line, index) => {
-    const includeHeader = index <= 2;
-    if (includeHeader) {
-      return true;
-    }
-
-    return lineRefersToChangedFile(line, changedFiles);
-  });
-
-  const onlyHeaderRemains = lines.length === 3;
-  return onlyHeaderRemains ? 'n/a' : `\n  ${lines.join('\n  ')}`;
 }
 
 run();
