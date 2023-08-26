@@ -65,13 +65,13 @@ Initial setup:
 
 ```bash
 nvm use
-make all
+make install
 ```
 
-After source code changes, format, lint, and build the project:
+After source code changes, format, lint, and build the project with:
 
 ```bash
-make all
+make build
 ```
 
 Then push to remote.
