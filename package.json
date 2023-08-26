@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Report code coverage from LCOV files",
   "main": "dist/main/index.js",
-  "type": "module",
   "scripts": {
     "install:git:hooks": "cp git-hooks/pre-commit .git/hooks/ && chmod +x .git/hooks/pre-commit",
     "preinstall": "npm run install:git:hooks",
@@ -11,8 +10,8 @@
     "lint:check": "rome check src/",
     "format": "rome format src/ --write",
     "format:check": "rome format src/",
-    "build:pre": "esbuild src/pre.js --outfile=dist/pre/index.js --sourcemap --minify --platform=node --target=node16",
-    "build:main": "esbuild src/main.js --outfile=dist/main/index.js --sourcemap --minify --platform=node --target=node16",
+    "build:pre": "esbuild --bundle src/pre.js --outfile=dist/pre/index.js --sourcemap --minify --platform=node --target=node16",
+    "build:main": "esbuild --bundle src/main.js --outfile=dist/main/index.js --sourcemap --minify --platform=node --target=node16",
     "build:all": "npm run format && npm run lint && npm run build:pre && npm run build:main"
   },
   "repository": {
@@ -36,7 +35,7 @@
     "@actions/exec": "^1.1.1",
     "@actions/github": "^5.1.1",
     "@actions/glob": "^0.4.0",
-    "lcov-total": "^2.1.1"
+    "lcov-total": "^1.0.7"
   },
   "devDependencies": {
     "esbuild": "^0.19.2",
