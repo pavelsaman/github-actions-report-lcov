@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const { execSync } = require('child_process');
+const { config } = require('./config');
 
 function run() {
   try {
@@ -16,7 +17,7 @@ function run() {
     const lcovVersion = execSync('lcov --version', { encoding: 'utf-8' });
     console.log(lcovVersion);
   } catch (error) {
-    core.setFailed(`code coverage gh action: ${error.message}`);
+    core.setFailed(`${config.action_msg_prefix} ${error.message}`);
   }
 }
 

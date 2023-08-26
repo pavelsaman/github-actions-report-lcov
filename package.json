@@ -6,10 +6,10 @@
   "scripts": {
     "install:git:hooks": "cp git-hooks/pre-commit .git/hooks/ && chmod +x .git/hooks/pre-commit",
     "preinstall": "npm run install:git:hooks",
-    "lint": "rome check src/*.js --apply",
-    "lint:check": "rome check src/*.js",
-    "format": "rome format src/*.js --write",
-    "format:check": "rome format src/*.js",
+    "lint": "rome check src/**/*.js --apply",
+    "lint:check": "rome check src/**/*.js",
+    "format": "rome format src/**/*.js --write",
+    "format:check": "rome format src/**/*.js",
     "build:pre": "esbuild --bundle src/pre.js --outfile=dist/pre/index.js --sourcemap --minify --platform=node --target=node16",
     "build:main": "esbuild --bundle src/main.js --outfile=dist/main/index.js --sourcemap --minify --platform=node --target=node16",
     "build:all": "npm run format && npm run lint && npm run build:pre && npm run build:main"

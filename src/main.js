@@ -6,22 +6,7 @@ const glob = require('@actions/glob');
 const lcovTotal = require('lcov-total');
 const path = require('path');
 const fs = require('fs');
-
-const NEWLINE = /\r?\n/;
-const COMMON_LCOV_ARGS = ['--rc', 'lcov_branch_coverage=1'];
-const ACTION_MSG_PREFIX = 'code coverage gh action:';
-
-function readAndSetInputs() {
-  return {
-    coverageFilesPattern: core.getInput('coverage-files'),
-    updateComment: core.getInput('update-comment') === 'true',
-    artifactName: core.getInput('artifact-name'),
-    minimumCoverage: Number(core.getInput('minimum-coverage')) || 0,
-    gitHubToken: core.getInput('github-token'),
-    workingDirectory: core.getInput('working-directory'),
-    listFullPaths: core.getInput('list-full-paths') === 'true',
-  };
-}
+const { config, inputs } = require('./config');
 
 function sha() {
   const full = github.context.payload.pull_request.head.sha;
@@ -101,28 +86,27 @@ function createTempDir() {
     fs.mkdirSync(tmpPath);
     return tmpPath;
   } catch (error) {
-    core.error(`${ACTION_MSG_PREFIX} creating a temp dir failed with: ${error.message}`);
+    core.error(`${config.action_msg_prefix} creating a temp dir failed with: ${error.message}`);
     process.exit(1);
   }
 }
 
 async function run() {
-  const { coverageFilesPattern, updateComment, artifactName, minimumCoverage, gitHubToken } = readAndSetInputs();
   const tmpDir = createTempDir();
 
   try {
-    const coverageFiles = await listFiles(coverageFilesPattern);
+    const coverageFiles = await listFiles(inputs.coverageFilesPattern);
     if (!coverageFiles.length) {
-      core.error(`${ACTION_MSG_PREFIX} no coverage lcov files found with pattern ${coverageFilesPattern}`);
+      core.error(`${config.action_msg_prefix} no coverage lcov files found with pattern ${inputs.coverageFilesPattern}`);
       process.exit(1);
     }
     const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpDir);
     const totalCoverageRounded = roundToOneDecimalPlace(lcovTotal(mergedCoverageFile));
-    const errorMessage = `Code coverage: **${totalCoverageRounded}** %. Expected at least **${minimumCoverage}** %.`;
-    const isMinimumCoverageReached = totalCoverageRounded >= minimumCoverage;
+    const errorMessage = `Code coverage: **${totalCoverageRounded}** %. Expected at least **${inputs.minimumCoverage}** %.`;
+    const isMinimumCoverageReached = totalCoverageRounded >= inputs.minimumCoverage;
 
-    if (gitHubToken && runningInPullRequest()) {
-      const octokit = github.getOctokit(gitHubToken);
+    if (inputs.gitHubToken && runningInPullRequest()) {
+      const octokit = github.getOctokit(inputs.gitHubToken);
       const body = buildMessageBody({
         header: buildHeader(isMinimumCoverageReached),
         summary: await summarize(mergedCoverageFile),
@@ -133,17 +117,17 @@ async function run() {
 
       commentOnPR({
         octokit,
-        updateComment,
+        updateComment: inputs.updateComment,
         body,
       });
     } else {
       core.warning(
-        `${ACTION_MSG_PREFIX} no github-token provided or not running in a PR workflow. Skipping creating a PR comment.`,
+        `${config.action_msg_prefix} no github-token provided or not running in a PR workflow. Skipping creating a PR comment.`,
       );
     }
 
-    if (artifactName) {
-      generateHTMLAndUpload(coverageFiles, artifactName, tmpDir);
+    if (inputs.artifactName) {
+      generateHTMLAndUpload(coverageFiles, inputs.artifactName, tmpDir);
     }
 
     core.setOutput('total-coverage', totalCoverageRounded);
@@ -151,16 +135,15 @@ async function run() {
       core.setFailed(errorMessage.replace(/\*/g, ''));
     }
   } catch (error) {
-    core.setFailed(`${ACTION_MSG_PREFIX} ${error.message}`);
+    core.setFailed(`${config.action_msg_prefix} ${error.message}`);
   }
 }
 
 async function generateHTMLAndUpload(coverageFiles, artifactName, tmpPath) {
-  const { workingDirectory } = readAndSetInputs();
   const artifactPath = path.resolve(tmpPath, 'html').trim();
 
-  const args = [...coverageFiles, ...COMMON_LCOV_ARGS, '--output-directory', artifactPath];
-  await exec.exec('genhtml', args, { cwd: workingDirectory });
+  const args = [...coverageFiles, ...config.common_lcov_args, '--output-directory', artifactPath];
+  await exec.exec('genhtml', args, { cwd: inputs.workingDirectory });
 
   const htmlFiles = await listFiles(`${artifactPath}/**`);
   artifact.create().uploadArtifact(artifactName, htmlFiles, artifactPath, { continueOnError: false });
@@ -178,7 +161,7 @@ async function mergeCoverages(coverageFiles, tmpPath) {
   args.push('--output-file');
   args.push(mergedCoverageFile);
 
-  await exec.exec('lcov', [...args, ...COMMON_LCOV_ARGS]);
+  await exec.exec('lcov', [...args, ...config.common_lcov_args]);
 
   return mergedCoverageFile;
 }
@@ -196,9 +179,9 @@ async function summarize(mergedCoverageFile) {
     },
   };
 
-  await exec.exec('lcov', ['--summary', mergedCoverageFile, ...COMMON_LCOV_ARGS], options);
+  await exec.exec('lcov', ['--summary', mergedCoverageFile, ...config.common_lcov_args], options);
 
-  const lines = output.trim().split(NEWLINE);
+  const lines = output.trim().split(config.newline);
   lines.shift(); // remove debug info
   return lines.join('\n');
 }
@@ -230,11 +213,10 @@ async function detail(coverageFile, octokit) {
     },
   };
 
-  const { listFullPaths } = readAndSetInputs();
-  const args = listFullPaths ? ['--list-full-path'] : [];
-  await exec.exec('lcov', ['--list', coverageFile, ...args, ...COMMON_LCOV_ARGS], options);
+  const args = inputs.listFullPaths ? ['--list-full-path'] : [];
+  await exec.exec('lcov', ['--list', coverageFile, ...args, ...config.common_lcov_args], options);
 
-  let lines = output.trim().split(NEWLINE);
+  let lines = output.trim().split(config.newline);
   // remove debug info
   lines.shift();
   lines.pop();
