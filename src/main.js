@@ -136,11 +136,14 @@ async function run() {
         updateComment,
         body,
       });
-      if (artifactName) {
-        generateHTMLAndUpload(coverageFiles, artifactName, tmpDir);
-      }
     } else {
-      core.warning('code coverage: no `github-token` provided. Skipping writing a comment to the PR.');
+      core.warning(
+        `${ACTION_MSG_PREFIX} no github-token provided or not running in a PR workflow. Skipping creating a PR comment.`,
+      );
+    }
+
+    if (artifactName) {
+      generateHTMLAndUpload(coverageFiles, artifactName, tmpDir);
     }
 
     core.setOutput('total-coverage', totalCoverageRounded);
