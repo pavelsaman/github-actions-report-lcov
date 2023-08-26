@@ -1,6 +1,6 @@
-const core = require('@actions/core');
-const { execSync } = require('child_process');
-const { config } = require('./config');
+import * as core from '@actions/core';
+import { execSync } from 'child_process';
+import { config } from './config';
 
 function run() {
   try {

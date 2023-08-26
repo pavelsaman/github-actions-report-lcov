@@ -1,12 +1,12 @@
-const artifact = require('@actions/artifact');
-const core = require('@actions/core');
-const exec = require('@actions/exec');
-const github = require('@actions/github');
-const glob = require('@actions/glob');
-const lcovTotal = require('lcov-total');
-const path = require('path');
-const fs = require('fs');
-const { config, inputs } = require('./config');
+import * as core from '@actions/core';
+import * as github from '@actions/github';
+import * as artifact from '@actions/artifact';
+import * as exec from '@actions/exec';
+import * as glob from '@actions/glob';
+import * as path from 'path';
+import lcovTotal from "lcov-total";
+import fs from 'fs';
+import { config, inputs } from './config';
 
 function sha() {
   const full = github.context.payload.pull_request.head.sha;
