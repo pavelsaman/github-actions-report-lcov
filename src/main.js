@@ -112,7 +112,7 @@ async function run() {
 
   try {
     const coverageFiles = await listFiles(coverageFilesPattern);
-    if (!coverageFiles) {
+    if (!coverageFiles.length) {
       core.error(`${ACTION_MSG_PREFIX} no coverage lcov files found with pattern ${coverageFilesPattern}`);
       process.exit(1);
     }
