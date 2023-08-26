@@ -20,7 +20,7 @@ This GitHub Action reports code coverage from LCOV files. This action includes:
 
 ### Outputs
 
-- `total-coverage`: total coverage rounded to 1 decimal place
+- `total-coverage`: Total coverage
 
 ### Example usage
 
