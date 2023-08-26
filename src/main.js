@@ -81,14 +81,26 @@ function roundToOneDecimalPlace(num) {
   return Math.round(num * 10) / 10;
 }
 
+async function listFiles(path) {
+  const globber = await glob.create(path);
+  const files = await globber.glob();
+  return files.filter((file) => {
+    try {
+      return fs.statSync(file).isFile();
+    } catch (error) {
+      console.log(error.message);
+      return false;
+    }
+  });
+}
+
 async function run() {
   const { coverageFilesPattern, updateComment, artifactName, minimumCoverage, gitHubToken } = readAndSetInputs();
 
   try {
     const tmpPath = `${process.env.GITHUB_WORKSPACE}/lcov-tmp-dir`;
     fs.mkdirSync(tmpPath);
-    const globber = await glob.create(coverageFilesPattern);
-    const coverageFiles = await globber.glob();
+    const coverageFiles = await listFiles(coverageFilesPattern);
 
     const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpPath);
     const totalCoverageRounded = roundToOneDecimalPlace(lcovTotal(mergedCoverageFile));
@@ -132,12 +144,9 @@ async function generateHTMLAndUpload(coverageFiles, artifactName, tmpPath) {
   const artifactPath = path.resolve(tmpPath, 'html').trim();
 
   const args = [...coverageFiles, ...COMMON_LCOV_ARGS, '--output-directory', artifactPath];
-
   await exec.exec('genhtml', args, { cwd: workingDirectory });
 
-  const globber = await glob.create(`${artifactPath}/**`);
-  const htmlFiles = await globber.glob();
-
+  const htmlFiles = await listFiles(`${artifactPath}/**`);
   artifact.create().uploadArtifact(artifactName, htmlFiles, artifactPath, { continueOnError: false });
 }
 
