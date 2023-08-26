@@ -9,6 +9,7 @@ const fs = require('fs');
 
 const NEWLINE = /\r?\n/;
 const COMMON_LCOV_ARGS = ['--rc', 'lcov_branch_coverage=1'];
+const ACTION_MSG_PREFIX = 'code coverage gh action:';
 
 function readAndSetInputs() {
   return {
@@ -100,7 +101,7 @@ function createTempDir() {
     fs.mkdirSync(tmpPath);
     return tmpPath;
   } catch (error) {
-    core.error(`code coverage gh action: creating a temp dir failed with: ${error.message}`);
+    core.error(`${ACTION_MSG_PREFIX} creating a temp dir failed with: ${error.message}`);
     process.exit(1);
   }
 }
@@ -111,6 +112,10 @@ async function run() {
 
   try {
     const coverageFiles = await listFiles(coverageFilesPattern);
+    if (!coverageFiles) {
+      core.error(`${ACTION_MSG_PREFIX} no coverage lcov files found with pattern ${coverageFilesPattern}`);
+      process.exit(1);
+    }
     const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpDir);
     const totalCoverageRounded = roundToOneDecimalPlace(lcovTotal(mergedCoverageFile));
     const errorMessage = `Code coverage: **${totalCoverageRounded}** %. Expected at least **${minimumCoverage}** %.`;
@@ -143,7 +148,7 @@ async function run() {
       core.setFailed(errorMessage.replace(/\*/g, ''));
     }
   } catch (error) {
-    core.setFailed(`code coverage gh action: ${error.message}`);
+    core.setFailed(`${ACTION_MSG_PREFIX} ${error.message}`);
   }
 }
 
