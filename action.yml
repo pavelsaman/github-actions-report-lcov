@@ -1,6 +1,10 @@
 name: 'Report LCOV'
 description: 'Report code coverage from LCOV files'
 author: 'Zennon Gosalvez'
+branding:
+  icon: umbrella
+  color: purple
+
 inputs:
   coverage-files:
     description: Coverage files to scan (e.g. `coverage/lcov.*.info`)
@@ -36,6 +40,3 @@ runs:
   pre: 'dist/pre.js'
   pre-if: runner.os == 'linux' || runner.os == 'macOS'
   main: 'dist/main.js'
-branding:
-  icon: umbrella
-  color: purple
