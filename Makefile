@@ -27,7 +27,7 @@ build-main:
 build-all: 
 	npm run build:all
 
-all: install prepare
+all: install build-all
 
 clean:
 	rm -rf /dist

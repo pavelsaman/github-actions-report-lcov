@@ -58,3 +58,21 @@ When minimum coverage was reached or no minimum coverage was enforced:
 When a check for minimum coverage fails:
 
 ![screenshot](assets/comment-failure.png)
+
+## Contribution
+
+Initial setup:
+
+```bash
+nvm use
+make all
+```
+
+After source code changes, format, lint, and build the project:
+
+```bash
+make all
+```
+
+Then push to remote.
+Then create a new tag or move the latest tag.
