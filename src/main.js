@@ -49,20 +49,20 @@ function runningInPullRequest() {
   return allowedGitHubEvents.includes(github.context.eventName);
 }
 
-async function getExistingPRComment(octokitInstance, commentHeader) {
+async function getExistingPRComment(octokitInstance) {
   const issueComments = await octokitInstance.rest.issues.listComments({
     repo: github.context.repo.repo,
     owner: github.context.repo.owner,
     issue_number: github.context.payload.pull_request.number,
   });
 
-  return issueComments.data.find((comment) => comment.body.includes(commentHeader));
+  return issueComments.data.find((comment) => comment.body.includes('Code coverage'));
 }
 
 async function commentOnPR(params) {
-  const { updateComment, header, body, octokit } = params;
+  const { updateComment, body, octokit } = params;
 
-  const existingComment = await getExistingPRComment(octokit, header);
+  const existingComment = await getExistingPRComment(octokit);
   const shouldUpdateComment = updateComment && existingComment;
   const prAction = shouldUpdateComment ? octokit.rest.issues.updateComment : octokit.rest.issues.createComment;
   const data = {
@@ -120,7 +120,6 @@ async function run() {
       commentOnPR({
         octokit,
         updateComment,
-        header: 'Code coverage',
         body,
       });
       if (artifactName) {
