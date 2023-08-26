@@ -8,6 +8,7 @@ const path = require('path');
 const fs = require('fs');
 
 const NEWLINE = /\r?\n/;
+const COMMON_LCOV_ARGS = ['--rc', 'lcov_branch_coverage=1'];
 
 function readAndSetInputs() {
   return {
@@ -46,10 +47,6 @@ function buildMessageBody(params) {
 function runningInPullRequest() {
   const allowedGitHubEvents = ['pull_request', 'pull_request_target'];
   return allowedGitHubEvents.includes(github.context.eventName);
-}
-
-function getCommonLcovArgs() {
-  return ['--rc', 'lcov_branch_coverage=1'];
 }
 
 async function getExistingPRComment(octokitInstance, commentHeader) {
@@ -134,7 +131,7 @@ async function generateHTMLAndUpload(coverageFiles, artifactName, tmpPath) {
   const { workingDirectory } = readAndSetInputs();
   const artifactPath = path.resolve(tmpPath, 'html').trim();
 
-  const args = [...coverageFiles, ...getCommonLcovArgs(), '--output-directory', artifactPath];
+  const args = [...coverageFiles, ...COMMON_LCOV_ARGS, '--output-directory', artifactPath];
 
   await exec.exec('genhtml', args, { cwd: workingDirectory });
 
@@ -156,7 +153,7 @@ async function mergeCoverages(coverageFiles, tmpPath) {
   args.push('--output-file');
   args.push(mergedCoverageFile);
 
-  await exec.exec('lcov', [...args, ...getCommonLcovArgs()]);
+  await exec.exec('lcov', [...args, ...COMMON_LCOV_ARGS]);
 
   return mergedCoverageFile;
 }
@@ -174,7 +171,7 @@ async function summarize(mergedCoverageFile) {
     },
   };
 
-  await exec.exec('lcov', ['--summary', mergedCoverageFile, ...getCommonLcovArgs()], options);
+  await exec.exec('lcov', ['--summary', mergedCoverageFile, ...COMMON_LCOV_ARGS], options);
 
   const lines = output.trim().split(NEWLINE);
   lines.shift(); // remove debug info
@@ -206,7 +203,7 @@ async function detail(coverageFile, octokit) {
 
   const { listFullPaths } = readAndSetInputs();
   const args = listFullPaths ? ['--list-full-path'] : [];
-  await exec.exec('lcov', ['--list', coverageFile, ...args, ...getCommonLcovArgs()], options);
+  await exec.exec('lcov', ['--list', coverageFile, ...args, ...COMMON_LCOV_ARGS], options);
 
   let lines = output.trim().split(NEWLINE);
   // remove debug info
