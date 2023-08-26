@@ -66,4 +66,3 @@ tmp/lib/tmp.js:
    * MIT Licensed
    *)
 */
-//# sourceMappingURL=index.js.map
