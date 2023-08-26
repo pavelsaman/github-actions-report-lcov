@@ -7,14 +7,7 @@ import * as path from 'path';
 import lcovTotal from 'lcov-total';
 import fs from 'fs';
 import { config, inputs } from './config';
-
-function sha() {
-  const full = github.context.payload.pull_request.head.sha;
-  return {
-    full,
-    short: full.substr(0, 7),
-  };
-}
+import { getChangedFilenames, commentOnPR, sha } from './github';
 
 function buildHeader(isMinimumCoverageReached) {
   return `## ${isMinimumCoverageReached ? '' : ':no_entry:'} Code coverage of commit [<code>${sha().short}</code>](${
@@ -33,34 +26,6 @@ function buildMessageBody(params) {
 function runningInPullRequest() {
   const allowedGitHubEvents = ['pull_request', 'pull_request_target'];
   return allowedGitHubEvents.includes(github.context.eventName);
-}
-
-async function getExistingPRComment(octokitInstance) {
-  const issueComments = await octokitInstance.rest.issues.listComments({
-    repo: github.context.repo.repo,
-    owner: github.context.repo.owner,
-    issue_number: github.context.payload.pull_request.number,
-  });
-
-  return issueComments.data.find((comment) => comment.body.includes('Code coverage'));
-}
-
-async function commentOnPR(params) {
-  const { updateComment, body, octokit } = params;
-
-  const existingComment = await getExistingPRComment(octokit);
-  const shouldUpdateComment = updateComment && existingComment;
-  const prAction = shouldUpdateComment ? octokit.rest.issues.updateComment : octokit.rest.issues.createComment;
-  const data = {
-    repo: github.context.repo.repo,
-    owner: github.context.repo.owner,
-    body,
-    ...(shouldUpdateComment
-      ? { comment_id: existingComment.id }
-      : { issue_number: github.context.payload.pull_request.number }),
-  };
-
-  prAction(data);
 }
 
 function roundToOneDecimalPlace(num) {
@@ -84,12 +49,12 @@ function createTempDir() {
 }
 
 async function run() {
-  const tmpDir = createTempDir();
   const coverageFiles = await listFiles(inputs.coverageFilesPattern);
   if (!coverageFiles.length) {
     core.error(`${config.action_msg_prefix} no coverage lcov files found with pattern ${inputs.coverageFilesPattern}`);
     process.exit(1);
   }
+  const tmpDir = createTempDir();
 
   try {
     const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpDir);
@@ -176,16 +141,6 @@ async function summarize(mergedCoverageFile) {
   const lines = output.trim().split(config.newline);
   lines.shift(); // remove debug info
   return lines.join('\n');
-}
-
-async function getChangedFilenames(octokitInstance) {
-  const listFilesOptions = octokitInstance.rest.pulls.listFiles.endpoint.merge({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
-    pull_number: github.context.payload.pull_request.number,
-  });
-  const listFilesResponse = await octokitInstance.paginate(listFilesOptions);
-  return listFilesResponse.map((file) => file.filename);
 }
 
 function lineRefersToChangedFile(lineWithFilename, changedFiles) {
