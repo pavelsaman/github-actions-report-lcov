@@ -1,6 +1,6 @@
 # Report code coverage
 
-This GitHub Action to report code coverage from LCOV files. This action includes:
+This GitHub Action reports code coverage from LCOV files. This action includes:
 
 - commenting on a pull request
 - generating an HTML report as an artifact
