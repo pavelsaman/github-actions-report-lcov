@@ -4,7 +4,7 @@ import * as artifact from '@actions/artifact';
 import * as exec from '@actions/exec';
 import * as glob from '@actions/glob';
 import * as path from 'path';
-import lcovTotal from "lcov-total";
+import lcovTotal from 'lcov-total';
 import fs from 'fs';
 import { config, inputs } from './config';
 
@@ -68,16 +68,8 @@ function roundToOneDecimalPlace(num) {
 }
 
 async function listFiles(path) {
-  const globber = await glob.create(path);
-  const files = await globber.glob();
-  return files.filter((file) => {
-    try {
-      return fs.statSync(file).isFile();
-    } catch (error) {
-      console.log(error.message);
-      return false;
-    }
-  });
+  const globber = await glob.create(path, { followSymbolicLinks: false, matchDirectories: false });
+  return await globber.glob();
 }
 
 function createTempDir() {
@@ -93,13 +85,13 @@ function createTempDir() {
 
 async function run() {
   const tmpDir = createTempDir();
+  const coverageFiles = await listFiles(inputs.coverageFilesPattern);
+  if (!coverageFiles.length) {
+    core.error(`${config.action_msg_prefix} no coverage lcov files found with pattern ${inputs.coverageFilesPattern}`);
+    process.exit(1);
+  }
 
   try {
-    const coverageFiles = await listFiles(inputs.coverageFilesPattern);
-    if (!coverageFiles.length) {
-      core.error(`${config.action_msg_prefix} no coverage lcov files found with pattern ${inputs.coverageFilesPattern}`);
-      process.exit(1);
-    }
     const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpDir);
     const totalCoverageRounded = roundToOneDecimalPlace(lcovTotal(mergedCoverageFile));
     const errorMessage = `Code coverage: **${totalCoverageRounded}** %. Expected at least **${inputs.minimumCoverage}** %.`;
