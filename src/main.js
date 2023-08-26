@@ -127,7 +127,7 @@ async function run() {
         generateHTMLAndUpload(coverageFiles, artifactName, tmpPath);
       }
     } else {
-      core.info('code coverage: no `github-token` provided. Skipping writing a comment to the PR.');
+      core.warning('code coverage: no `github-token` provided. Skipping writing a comment to the PR.');
     }
 
     core.setOutput('total-coverage', totalCoverageRounded);
