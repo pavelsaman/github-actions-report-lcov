@@ -94,15 +94,24 @@ async function listFiles(path) {
   });
 }
 
-async function run() {
-  const { coverageFilesPattern, updateComment, artifactName, minimumCoverage, gitHubToken } = readAndSetInputs();
-
+function createTempDir() {
   try {
     const tmpPath = `${process.env.GITHUB_WORKSPACE}/lcov-tmp-dir`;
     fs.mkdirSync(tmpPath);
-    const coverageFiles = await listFiles(coverageFilesPattern);
+    return tmpPath;
+  } catch (error) {
+    core.error(`code coverage gh action: creating a temp dir failed with: ${error.message}`);
+    process.exit(1);
+  }
+}
 
-    const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpPath);
+async function run() {
+  const { coverageFilesPattern, updateComment, artifactName, minimumCoverage, gitHubToken } = readAndSetInputs();
+  const tmpDir = createTempDir();
+
+  try {
+    const coverageFiles = await listFiles(coverageFilesPattern);
+    const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpDir);
     const totalCoverageRounded = roundToOneDecimalPlace(lcovTotal(mergedCoverageFile));
     const errorMessage = `Code coverage: **${totalCoverageRounded}** %. Expected at least **${minimumCoverage}** %.`;
     const isMinimumCoverageReached = totalCoverageRounded >= minimumCoverage;
@@ -123,7 +132,7 @@ async function run() {
         body,
       });
       if (artifactName) {
-        generateHTMLAndUpload(coverageFiles, artifactName, tmpPath);
+        generateHTMLAndUpload(coverageFiles, artifactName, tmpDir);
       }
     } else {
       core.warning('code coverage: no `github-token` provided. Skipping writing a comment to the PR.');
