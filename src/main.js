@@ -197,6 +197,10 @@ async function getChangedFilenames(octokitInstance) {
   return listFilesResponse.map((file) => file.filename);
 }
 
+function lineRefersToChangedFile(lineWithFilename, changedFiles) {
+  return changedFiles.some((changedFile) => lineWithFilename.startsWith(changedFile));
+}
+
 async function detail(coverageFile, octokit) {
   let output = '';
   const options = {
@@ -227,15 +231,7 @@ async function detail(coverageFile, octokit) {
       return true;
     }
 
-    for (const changedFile of changedFiles) {
-      console.log(`${line} === ${changedFile}`);
-
-      if (line.startsWith(changedFile)) {
-        return true;
-      }
-    }
-
-    return false;
+    return lineRefersToChangedFile(line, changedFiles);
   });
 
   const onlyHeaderRemains = lines.length === 3;
