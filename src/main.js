@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import lcovTotal from 'lcov-total';
 import { config, inputs } from './config';
-import { commentOnPR, getChangedFilenames } from './github';
+import { commentOnPR, getChangedFilenames, sha } from './github';
 import { listFiles } from './utils';
 import { mergeCoverages, detail, summarize, generateHTMLAndUpload } from './lcov';
 import { createTempDir, roundToOneDecimalPlace, runningInPullRequest, buildHeader, buildMessageBody } from './utils';
@@ -24,7 +24,7 @@ async function run() {
     if (inputs.gitHubToken && runningInPullRequest()) {
       const octokit = github.getOctokit(inputs.gitHubToken);
       const body = buildMessageBody({
-        header: buildHeader(isMinimumCoverageReached),
+        header: buildHeader(isMinimumCoverageReached, sha()),
         summary: await summarize(mergedCoverageFile),
         details: await detail(mergedCoverageFile, await getChangedFilenames(octokit)),
         isMinimumCoverageReached,

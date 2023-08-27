@@ -1,7 +1,6 @@
 import * as glob from '@actions/glob';
 import * as github from '@actions/github';
 import * as core from '@actions/core';
-import { sha } from '../github';
 import { config } from '../config';
 import fs from 'fs';
 
@@ -10,10 +9,10 @@ export async function listFiles(path) {
   return await globber.glob();
 }
 
-export function buildHeader(isMinimumCoverageReached) {
-  return `## ${isMinimumCoverageReached ? '' : ':no_entry:'} Code coverage of commit [<code>${sha().short}</code>](${
+export function buildHeader(isMinimumCoverageReached, sha) {
+  return `## ${isMinimumCoverageReached ? '' : ':no_entry:'} Code coverage of commit [<code>${sha.short}</code>](${
     github.context.payload.pull_request.number
-  }/commits/${sha().full})\n\n`;
+  }/commits/${sha.full})\n\n`;
 }
 
 export function buildMessageBody(params) {
