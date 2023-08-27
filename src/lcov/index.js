@@ -16,6 +16,17 @@ function lineRefersToChangedFile(lineWithFilename, changedFiles) {
 }
 
 /**
+ * Checks if the last directory is not present in output lines.
+ *
+ * @param {string} dir - The directory path to check for
+ * @param {string[]} output - Array of output lines
+ * @returns {boolean} True if dir is not found in output, false otherwise
+ */
+function lastDirNotInOutput(dir, output) {
+  return !output.some((outputLine) => outputLine === dir);
+}
+
+/**
  * Generates HTML coverage report and uploads artifact.
  *
  * @param {string[]} coverageFiles - List of coverage files
@@ -113,6 +124,9 @@ export async function detail(coverageFile, changedFiles) {
       lastDir = line.replace(/[\[\]]/g, '');
     }
     if (lineRefersToChangedFile(path.join(lastDir, line), changedFiles)) {
+      if (lastDirNotInOutput(`[${lastDir}]`, contentLines)) {
+        contentLines.push(`[${lastDir}]`);
+      }
       contentLines.push(line);
     }
   }
