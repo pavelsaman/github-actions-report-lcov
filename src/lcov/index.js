@@ -99,21 +99,25 @@ export async function detail(coverageFile, changedFiles) {
   const args = inputs.listFullPaths ? ['--list-full-path'] : [];
   await exec.exec('lcov', ['--list', coverageFile, ...args, ...config.common_lcov_args], options);
 
-  let lines = output.trim().split(config.newline);
+  const lines = output.trim().split(config.newline);
   // remove debug info
   lines.shift();
   lines.pop();
   lines.pop();
 
-  lines = lines.filter((line, index) => {
-    const includeHeader = index <= 2;
-    if (includeHeader) {
-      return true;
+  const headerLines = lines.slice(0, 3);
+  const contentLines = [];
+  let lastDir = '';
+  for (const line of lines.slice(3)) {
+    if (!inputs.listFullPaths && line.startsWith('[')) {
+      lastDir = line.replace(/[\[\]]/g, '');
     }
+    if (lineRefersToChangedFile(path.join(lastDir, line), changedFiles)) {
+      contentLines.push(line);
+    }
+  }
+  const finalLines = [...headerLines, ...contentLines];
 
-    return lineRefersToChangedFile(line, changedFiles);
-  });
-
-  const onlyHeaderRemains = lines.length === 3;
-  return onlyHeaderRemains ? 'n/a' : `\n  ${lines.join('\n  ')}`;
+  const onlyHeaderRemains = finalLines.length === 3;
+  return onlyHeaderRemains ? 'n/a' : `\n  ${finalLines.join('\n  ')}`;
 }
