@@ -81,7 +81,7 @@ export async function summarize(mergedCoverageFile) {
  *
  * @param {string} coverageFile - Path to coverage file
  * @param {string[]} changedFiles - List of changed files
- * @returns {string} The detailed coverage info
+ * @returns {Promise<string>} The detailed coverage info
  */
 export async function detail(coverageFile, changedFiles) {
   let output = '';
