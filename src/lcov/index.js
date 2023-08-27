@@ -27,6 +27,19 @@ function lastDirNotInOutput(dir, output) {
 }
 
 /**
+ * Get the directory name from a line if present.
+ *
+ * @param {string} line - The input line to parse
+ * @returns {string|undefined} The directory name if there could be directory names and the line starts with '[', otherwise undefined
+ */
+function getDirectory(line) {
+  if (!inputs.listFullPaths && line.startsWith('[')) {
+    return line.replace(/[\[\]]/g, '');
+  }
+  return undefined;
+}
+
+/**
  * Generates HTML coverage report and uploads artifact.
  *
  * @param {string[]} coverageFiles - List of coverage files
@@ -118,14 +131,15 @@ export async function detail(coverageFile, changedFiles) {
 
   const headerLines = lines.slice(0, 3);
   const contentLines = [];
-  let lastDir = '';
+  let currectDirectory = '';
   for (const line of lines.slice(3)) {
-    if (!inputs.listFullPaths && line.startsWith('[')) {
-      lastDir = line.replace(/[\[\]]/g, '');
+    const directory = getDirectory(line);
+    if (directory) {
+      currectDirectory = directory;
     }
-    if (lineRefersToChangedFile(path.join(lastDir, line), changedFiles)) {
-      if (lastDirNotInOutput(`[${lastDir}]`, contentLines)) {
-        contentLines.push(`[${lastDir}]`);
+    if (lineRefersToChangedFile(path.join(currectDirectory, line), changedFiles)) {
+      if (lastDirNotInOutput(`[${currectDirectory}]`, contentLines)) {
+        contentLines.push(`[${currectDirectory}]`);
       }
       contentLines.push(line);
     }
