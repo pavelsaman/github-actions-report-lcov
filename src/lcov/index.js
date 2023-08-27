@@ -4,10 +4,24 @@ import * as path from 'path';
 import { config, inputs } from '../config';
 import { listFiles } from '../utils';
 
+/**
+ * Checks if a line refers to a changed file.
+ *
+ * @param {string} lineWithFilename - The line containing a filename
+ * @param {string[]} changedFiles - List of changed file paths
+ * @returns {boolean} True if line refers to changed file
+ */
 function lineRefersToChangedFile(lineWithFilename, changedFiles) {
   return changedFiles.some((changedFile) => lineWithFilename.startsWith(changedFile));
 }
 
+/**
+ * Generates HTML coverage report and uploads artifact.
+ *
+ * @param {string[]} coverageFiles - List of coverage files
+ * @param {string} artifactName - Name of artifact
+ * @param {string} tmpPath - Temp directory path
+ */
 export async function generateHTMLAndUpload(coverageFiles, artifactName, tmpPath) {
   const artifactPath = path.resolve(tmpPath, 'html').trim();
 
@@ -18,6 +32,13 @@ export async function generateHTMLAndUpload(coverageFiles, artifactName, tmpPath
   artifact.create().uploadArtifact(artifactName, htmlFiles, artifactPath, { continueOnError: false });
 }
 
+/**
+ * Merges coverage data files into a single file.
+ *
+ * @param {string[]} coverageFiles - List of coverage files
+ * @param {string} tmpPath - Temp directory path
+ * @returns {Promise<string>} Path to merged coverage file
+ */
 export async function mergeCoverages(coverageFiles, tmpPath) {
   const mergedCoverageFile = `${tmpPath}/merged-lcov.info`;
 
@@ -29,6 +50,12 @@ export async function mergeCoverages(coverageFiles, tmpPath) {
   return mergedCoverageFile;
 }
 
+/**
+ * Generates a coverage summary from a merged coverage file.
+ *
+ * @param {string} mergedCoverageFile - Path to merged coverage file
+ * @returns {Promise<string>} The coverage summary
+ */
 export async function summarize(mergedCoverageFile) {
   let output = '';
   const options = {
@@ -49,6 +76,13 @@ export async function summarize(mergedCoverageFile) {
   return lines.join('\n');
 }
 
+/**
+ * Generates detailed coverage info for changed files.
+ *
+ * @param {string} coverageFile - Path to coverage file
+ * @param {string[]} changedFiles - List of changed files
+ * @returns {string} The detailed coverage info
+ */
 export async function detail(coverageFile, changedFiles) {
   let output = '';
   const options = {
