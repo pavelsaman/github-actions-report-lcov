@@ -29,11 +29,13 @@ export async function getChangedFilenames(octokitInstance) {
 }
 
 export async function commentOnPR(params) {
-  const { updateComment, body, octokit } = params;
+  const { updateComment, body, octokit: octokitInstance } = params;
 
-  const existingComment = await getExistingPullRequestComment(octokit);
+  const existingComment = await getExistingPullRequestComment(octokitInstance);
   const shouldUpdateComment = updateComment && existingComment;
-  const prAction = shouldUpdateComment ? octokit.rest.issues.updateComment : octokit.rest.issues.createComment;
+  const prAction = shouldUpdateComment
+    ? octokitInstance.rest.issues.updateComment
+    : octokitInstance.rest.issues.createComment;
   const data = {
     repo: github.context.repo.repo,
     owner: github.context.repo.owner,
