@@ -40,7 +40,7 @@ export async function generateHTMLAndUpload(coverageFiles, artifactName, tmpPath
  * @returns {Promise<string>} Path to merged coverage file
  */
 export async function mergeCoverages(coverageFiles, tmpPath) {
-  const mergedCoverageFile = `${tmpPath}/merged-lcov.info`;
+  const mergedCoverageFile = path.join(tmpPath, 'merged-lcov.info');
 
   const args = coverageFiles.flatMap((coverageFile) => ['--add-tracefile', coverageFile]);
   args.push('--output-file', mergedCoverageFile);
