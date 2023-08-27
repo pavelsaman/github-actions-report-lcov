@@ -61,7 +61,7 @@ When a check for minimum coverage fails:
 
 ![screenshot](assets/comment-failure.png)
 
-Showing coverage for files changed in the pull request:
+Showing detailed coverage for changed files in the pull request:
 
 ![screenshot](assets/comment-details.png)
 
