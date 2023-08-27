@@ -1,6 +1,7 @@
 import * as glob from '@actions/glob';
 import * as github from '@actions/github';
 import * as core from '@actions/core';
+import * as path from 'path';
 import { config } from '../config';
 import fs from 'fs';
 
@@ -33,8 +34,9 @@ export function roundToOneDecimalPlace(num) {
 }
 
 export function createTempDir() {
+  const tmpPath = path.join(process.env.GITHUB_WORKSPACE, 'lcov-tmp-dir');
+
   try {
-    const tmpPath = `${process.env.GITHUB_WORKSPACE}/lcov-tmp-dir`;
     fs.mkdirSync(tmpPath);
     return tmpPath;
   } catch (error) {
