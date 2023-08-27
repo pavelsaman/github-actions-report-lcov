@@ -22,10 +22,7 @@ export async function generateHTMLAndUpload(coverageFiles, artifactName, tmpPath
 export async function mergeCoverages(coverageFiles, tmpPath) {
   const mergedCoverageFile = `${tmpPath}/merged-lcov.info`;
 
-  const args = [];
-  for (const coverageFile of coverageFiles) {
-    args.push('--add-tracefile', coverageFile);
-  }
+  const args = coverageFiles.flatMap((coverageFile) => ['--add-tracefile', coverageFile]);
   args.push('--output-file', mergedCoverageFile);
 
   await exec.exec('lcov', [...args, ...config.common_lcov_args]);
