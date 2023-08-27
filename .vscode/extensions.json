@@ -5,7 +5,8 @@
     "redhat.vscode-yaml",
     "DavidAnson.vscode-markdownlint",
     "jasonnutter.vscode-codeowners",
-    "johnpapa.vscode-peacock"
+    "johnpapa.vscode-peacock",
+    "kimlimjustin.jsdoc-generator"
   ],
   "unwantedRecommendations": []
 }
