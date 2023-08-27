@@ -1,7 +1,6 @@
 import * as artifact from '@actions/artifact';
 import * as exec from '@actions/exec';
 import * as path from 'path';
-import { getChangedFilenames } from '../github';
 import { config, inputs } from '../config';
 import { listFiles } from '../utils';
 
@@ -50,7 +49,7 @@ export async function summarize(mergedCoverageFile) {
   return lines.join('\n');
 }
 
-export async function detail(coverageFile, octokit) {
+export async function detail(coverageFile, changedFiles) {
   let output = '';
   const options = {
     listeners: {
@@ -72,7 +71,6 @@ export async function detail(coverageFile, octokit) {
   lines.pop();
   lines.pop();
 
-  const changedFiles = await getChangedFilenames(octokit);
   lines = lines.filter((line, index) => {
     const includeHeader = index <= 2;
     if (includeHeader) {
