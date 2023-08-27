@@ -24,9 +24,9 @@ export async function listFiles(path) {
  * @returns {string} The header markdown
  */
 export function buildHeader(isMinimumCoverageReached, sha) {
-  return `## ${isMinimumCoverageReached ? '' : ':no_entry:'} Code coverage of commit [<code>${sha.short}</code>](${
-    github.context.payload.pull_request.number
-  }/commits/${sha.full})\n\n`;
+  const emoji = isMinimumCoverageReached ? '' : ':no_entry:';
+  const commitLink = `[<code>${sha.short}</code>](${github.context.payload.pull_request.number}/commits/${sha.full})`;
+  return `## ${emoji} Code coverage of commit ${commitLink}\n\n`;
 }
 
 /**
@@ -37,10 +37,8 @@ export function buildHeader(isMinimumCoverageReached, sha) {
  */
 export function buildMessageBody(params) {
   const { header, summary, details, isMinimumCoverageReached, errorMessage } = params;
-
-  return `${header}<pre>${summary}\n\nChanged files coverage rate: ${details}</pre>\n\n${
-    isMinimumCoverageReached ? '' : `:no_entry: ${errorMessage}`
-  }`;
+  const errorInfo = isMinimumCoverageReached ? '' : `:no_entry: ${errorMessage}`;
+  return `${header}<pre>${summary}\n\nChanged files coverage rate: ${details}</pre>\n\n${errorInfo}`;
 }
 
 /**
