@@ -55,7 +55,7 @@ export async function commentOnPR(params) {
 
   const existingComment = await getExistingPullRequestComment(octokitInstance);
   const shouldUpdateComment = updateComment && existingComment;
-  const prAction = shouldUpdateComment
+  const sendCommentToPR = shouldUpdateComment
     ? octokitInstance.rest.issues.updateComment
     : octokitInstance.rest.issues.createComment;
   const data = {
@@ -67,5 +67,5 @@ export async function commentOnPR(params) {
       : { issue_number: github.context.payload.pull_request.number }),
   };
 
-  prAction(data);
+  sendCommentToPR(data);
 }
