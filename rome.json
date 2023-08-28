@@ -1,19 +1,25 @@
 {
-	"$schema": "https://docs.rome.tools/schemas/12.1.3/schema.json",
-	"organizeImports": {
-		"enabled": false
-	},
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true,
+  "$schema": "https://docs.rome.tools/schemas/12.1.3/schema.json",
+  "organizeImports": {
+    "enabled": false
+  },
+  "files": {
+    "ignore": [
+      "dist/",
+      "lib/"
+    ]
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
       "correctness": {
         "all": true,
         "noUnusedVariables": "error",
         "noUndeclaredVariables": "error"
       }
-		}
-	},
+    }
+  },
   "formatter": {
     "indentSize": 2,
     "formatWithErrors": false,

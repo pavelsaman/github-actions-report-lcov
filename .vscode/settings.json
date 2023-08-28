@@ -20,5 +20,12 @@
   },
   "peacock.color": "#1857a4",
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "rome.rome"
+  "editor.defaultFormatter": "rome.rome",
+  "editor.codeActionsOnSave": ["quickfix.rome", "source.addMissingImports", "source.organizeImports", "source.fixAll"],
+  "[typescript]": {
+    "editor.defaultFormatter": "rome.rome"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "rome.rome"
+  }
 }
