@@ -34,7 +34,7 @@ function lastDirNotInOutput(dir, output) {
  */
 function getDirectory(line) {
   if (!inputs.listFullPaths && line.startsWith('[')) {
-    return line.replace(/[\[\]]/g, '');
+    return line.replace(/[[\]]/g, '');
   }
   return undefined;
 }
