@@ -6,7 +6,8 @@
     "DavidAnson.vscode-markdownlint",
     "jasonnutter.vscode-codeowners",
     "johnpapa.vscode-peacock",
-    "kimlimjustin.jsdoc-generator"
+    "kimlimjustin.jsdoc-generator",
+    "SonarSource.sonarlint-vscode"
   ],
   "unwantedRecommendations": []
 }
