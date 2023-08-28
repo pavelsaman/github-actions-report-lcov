@@ -3,9 +3,15 @@ import * as github from '@actions/github';
 import lcovTotal from 'lcov-total';
 import { config, inputs } from './config';
 import { commentOnPR, getChangedFilenames, sha } from './github';
-import { listFiles } from './utils';
-import { mergeCoverages, detail, summarize, generateHTMLAndUpload } from './lcov';
-import { createTempDir, roundToOneDecimalPlace, runningInPullRequest, buildHeader, buildMessageBody } from './utils';
+import { detail, generateHTMLAndUpload, mergeCoverages, summarize } from './lcov';
+import {
+  buildHeader,
+  buildMessageBody,
+  createTempDir,
+  listFiles,
+  roundToOneDecimalPlace,
+  runningInPullRequest,
+} from './utils';
 
 async function run() {
   const coverageFiles = await listFiles(inputs.coverageFilesPattern);
