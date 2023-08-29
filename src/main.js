@@ -1,17 +1,10 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import lcovTotal from 'lcov-total';
+import totalCoverage from 'total-coverage';
 import { config, inputs } from './config';
 import { commentOnPR, getChangedFilenames, sha } from './github';
 import { detail, generateHTMLAndUpload, mergeCoverages, summarize } from './lcov';
-import {
-  buildHeader,
-  buildMessageBody,
-  createTempDir,
-  listFiles,
-  roundToOneDecimalPlace,
-  runningInPullRequest,
-} from './utils';
+import { buildHeader, buildMessageBody, createTempDir, listFiles, runningInPullRequest } from './utils';
 
 async function run() {
   const coverageFiles = await listFiles(inputs.coverageFilesPattern);
@@ -23,7 +16,8 @@ async function run() {
 
   try {
     const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpDir);
-    const totalCoverageRounded = roundToOneDecimalPlace(lcovTotal(mergedCoverageFile));
+    const totalCoverages = totalCoverage(mergedCoverageFile);
+    const totalCoverageRounded = totalCoverages.totalLineCov;
     const errorMessage = `Code coverage: **${totalCoverageRounded}** %. Expected at least **${inputs.minimumCoverage}** %.`;
     const isMinimumCoverageReached = totalCoverageRounded >= inputs.minimumCoverage;
 
@@ -52,7 +46,9 @@ async function run() {
       generateHTMLAndUpload(coverageFiles, inputs.artifactName, tmpDir);
     }
 
-    core.setOutput('total-coverage', totalCoverageRounded);
+    core.setOutput('total-line-coverage', totalCoverages.totalLineCov);
+    core.setOutput('total-branch-coverage', totalCoverages.totalBranchCov);
+    core.setOutput('total-function-coverage', totalCoverages.totalFunctionCov);
     if (!isMinimumCoverageReached) {
       core.setFailed(errorMessage.replace(/\*/g, ''));
     }

@@ -52,16 +52,6 @@ export function runningInPullRequest() {
 }
 
 /**
- * Rounds a number to one decimal place.
- *
- * @param {number} num - The number to round
- * @returns {number} The rounded number
- */
-export function roundToOneDecimalPlace(num) {
-  return Math.round(num * 10) / 10;
-}
-
-/**
  * Creates a temp directory in the workspace.
  *
  * @returns {string} The temp directory path

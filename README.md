@@ -22,7 +22,9 @@ This GitHub Action reports code coverage from LCOV files. This action includes:
 
 ### Outputs
 
-- `total-coverage`: Total coverage
+- `total-line-coverage`: Total line coverage
+- `total-branch-coverage`: Total branch coverage
+- `total-function-coverage`: Total function coverage
 
 ### Example usage
 

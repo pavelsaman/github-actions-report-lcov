@@ -32,8 +32,12 @@ inputs:
     required: false
     default: 'true'
 outputs:
-  total-coverage:
-      description: Total coverage.
+  total-line-coverage:
+      description: Total line coverage.
+  total-branch-coverage:
+      description: Total branch coverage.
+  total-function-coverage:
+      description: Total function coverage.
 
 runs:
   using: 'node16'
