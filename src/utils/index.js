@@ -3,7 +3,7 @@ import * as github from '@actions/github';
 import * as glob from '@actions/glob';
 import fs from 'fs';
 import * as path from 'path';
-import { config } from '../config';
+import { config, inputs } from '../config';
 
 /**
  * Lists files matching a glob pattern.
@@ -32,13 +32,12 @@ export function buildHeader(isMinimumCoverageReached, sha) {
 /**
  * Builds the PR comment body string.
  *
- * @param {object} params Parameters including header, summary, details, isMinimumCoverageReached, and errorMessage
+ * @param {object} params Parameters including header, summary, details, and errorMessage
  * @returns {string} The message body markdown
  */
 export function buildMessageBody(params) {
-  const { header, summary, details, isMinimumCoverageReached, errorMessage } = params;
-  const errorInfo = isMinimumCoverageReached ? '' : `:no_entry: ${errorMessage}`;
-  return `${header}<pre>${summary}\n\nChanged files coverage rate: ${details}</pre>\n\n${errorInfo}`;
+  const { header, summary, details, errorMessage } = params;
+  return `${header}<pre>${summary}\n\nChanged files coverage rate: ${details}</pre>\n\n${errorMessage}`;
 }
 
 /**
@@ -66,4 +65,43 @@ export function createTempDir() {
     core.error(`${config.action_msg_prefix} creating a temp dir failed with: ${error.message}`);
     process.exit(1);
   }
+}
+
+export function findFailedCoverages(totalCoverages) {
+  return {
+    line: {
+      coverage: totalCoverages.totalLineCov,
+      minCoverage: inputs.minimumLineCoverage,
+      isMinimumCoverageReached: totalCoverages.totalLineCov >= inputs.minimumLineCoverage,
+    },
+    function: {
+      coverage: totalCoverages.totalFunctionCov,
+      minCoverage: inputs.minimumFunctionCoverage,
+      isMinimumCoverageReached: totalCoverages.totalFunctionCov >= inputs.minimumFunctionCoverage,
+    },
+    branch: {
+      coverage: totalCoverages.totalBranchCov,
+      minCoverage: inputs.minimumBranchCoverage,
+      isMinimumCoverageReached: totalCoverages.totalBranchCov >= inputs.minimumBranchCoverage,
+    },
+  };
+}
+
+function firstCharToUpperCase(word) {
+  return `${word.charAt(0).toUpperCase()}${word.slice(1)}`;
+}
+
+export function createErrorMessageAndSetFailedStatus(coveragesInfo) {
+  let errorMessage = '';
+  for (const [coverageType, coverageInfo] of Object.entries(coveragesInfo).filter(
+    ([_coverageTypes, coverageInfo]) => !coverageInfo.isMinimumCoverageReached,
+  )) {
+    errorMessage += `:no_entry: ${firstCharToUpperCase(coverageType)} coverage: **${
+      coverageInfo.coverage
+    }** %. Expected at least **${coverageInfo.minCoverage}** %.\n\n`;
+  }
+  if (errorMessage) {
+    core.setFailed(errorMessage.replace(/\*/g, '').replace(/\n/g, ''));
+  }
+  return errorMessage;
 }

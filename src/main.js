@@ -4,7 +4,15 @@ import totalCoverage from 'total-coverage';
 import { config, inputs } from './config';
 import { commentOnPR, getChangedFilenames, sha } from './github';
 import { detail, generateHTMLAndUpload, mergeCoverages, summarize } from './lcov';
-import { buildHeader, buildMessageBody, createTempDir, listFiles, runningInPullRequest } from './utils';
+import {
+  buildHeader,
+  buildMessageBody,
+  createErrorMessageAndSetFailedStatus,
+  createTempDir,
+  findFailedCoverages,
+  listFiles,
+  runningInPullRequest,
+} from './utils';
 
 async function run() {
   const coverageFiles = await listFiles(inputs.coverageFilesPattern);
@@ -17,9 +25,9 @@ async function run() {
   try {
     const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpDir);
     const totalCoverages = totalCoverage(mergedCoverageFile);
-    const totalCoverageRounded = totalCoverages.totalLineCov;
-    const errorMessage = `Code coverage: **${totalCoverageRounded}** %. Expected at least **${inputs.minimumCoverage}** %.`;
-    const isMinimumCoverageReached = totalCoverageRounded >= inputs.minimumCoverage;
+    const coverageInfo = findFailedCoverages(totalCoverages);
+    const isMinimumCoverageReached =
+      Object.values(coverageInfo).filter((c) => !c.isMinimumCoverageReached).length === 0;
 
     if (inputs.gitHubToken && runningInPullRequest()) {
       const octokit = github.getOctokit(inputs.gitHubToken);
@@ -28,7 +36,7 @@ async function run() {
         summary: await summarize(mergedCoverageFile),
         details: await detail(mergedCoverageFile, await getChangedFilenames(octokit)),
         isMinimumCoverageReached,
-        errorMessage,
+        errorMessage: createErrorMessageAndSetFailedStatus(coverageInfo),
       });
 
       commentOnPR({
@@ -49,9 +57,6 @@ async function run() {
     core.setOutput('total-line-coverage', totalCoverages.totalLineCov);
     core.setOutput('total-branch-coverage', totalCoverages.totalBranchCov);
     core.setOutput('total-function-coverage', totalCoverages.totalFunctionCov);
-    if (!isMinimumCoverageReached) {
-      core.setFailed(errorMessage.replace(/\*/g, ''));
-    }
   } catch (error) {
     core.setFailed(`${config.action_msg_prefix} ${error.message}`);
   }

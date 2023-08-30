@@ -12,8 +12,16 @@ inputs:
   artifact-name:
     description: Name of generated coverage report artifact. Default is no artifact created.
     required: false
-  minimum-coverage:
-    description: Minimum % coverage to pass check. Default `0`.
+  minimum-line-coverage:
+    description: Minimum % line coverage to pass check. Default `0`.
+    required: false
+    default: '0'
+  minimum-branch-coverage:
+    description: Minimum % branch coverage to pass check. Default `0`.
+    required: false
+    default: '0'
+  minimum-function-coverage:
+    description: Minimum % function coverage to pass check. Default `0`.
     required: false
     default: '0'
   github-token:
