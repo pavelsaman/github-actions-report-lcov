@@ -81,18 +81,8 @@ export async function mergeCoverages(coverageFiles, tmpPath) {
  * @returns {Promise<string>} The coverage summary
  */
 export async function summarize(mergedCoverageFile) {
-  let output = '';
-  const options = {
-    listeners: {
-      stdout: (data) => {
-        output += data.toString();
-      },
-    },
-  };
-
-  await exec.exec('lcov', ['--summary', mergedCoverageFile, ...config.common_lcov_args], options);
-
-  const lines = output.trim().split(config.newline);
+  const output = await exec.getExecOutput('lcov', ['--summary', mergedCoverageFile, ...config.common_lcov_args]);
+  const lines = output.stdout.trim().split(config.newline);
   lines.shift(); // remove debug info
   return lines.join('\n');
 }
@@ -105,19 +95,9 @@ export async function summarize(mergedCoverageFile) {
  * @returns {Promise<string>} The detailed coverage info
  */
 export async function detail(coverageFile, changedFiles) {
-  let output = '';
-  const options = {
-    listeners: {
-      stdout: (data) => {
-        output += data.toString();
-      },
-    },
-  };
-
   const args = inputs.listFullPaths ? ['--list-full-path'] : [];
-  await exec.exec('lcov', ['--list', coverageFile, ...args, ...config.common_lcov_args], options);
-
-  const lines = output.trim().split(config.newline);
+  const output = await exec.getExecOutput('lcov', ['--list', coverageFile, ...args, ...config.common_lcov_args]);
+  const lines = output.stdout.trim().split(config.newline);
   // remove debug info
   lines.shift();
   lines.pop();
