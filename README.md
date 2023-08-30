@@ -61,13 +61,19 @@ When minimum coverage was reached or no minimum coverage was enforced:
 
 ![screenshot](assets/comment-ok.png)
 
-When a check for minimum coverage fails:
-
-![screenshot](assets/comment-failure.png)
-
 Showing detailed coverage for changed files in the pull request:
 
 ![screenshot](assets/comment-details.png)
+
+When all checks for minimum coverage fail:
+
+![screenshot](assets/comment-all-coverages-failure.png)
+
+When some checks for minimum coverage fail:
+
+![screenshot](assets/comment-line-branch-coverages-failure.png)
+
+![screenshot](assets/comment-line-coverage-failure.png)
 
 ## Contribution
 
