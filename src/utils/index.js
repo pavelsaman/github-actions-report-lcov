@@ -67,6 +67,12 @@ export function createTempDir() {
   }
 }
 
+/**
+ * Returns coverage info for all three types of coverage.
+ *
+ * @param {object} totalCoverages - Object containing total coverage percentages.
+ * @returns {object} Object containing coverage info for line, function, and branch coverage.
+ */
 export function findFailedCoverages(totalCoverages) {
   return {
     line: {
@@ -87,10 +93,22 @@ export function findFailedCoverages(totalCoverages) {
   };
 }
 
+/**
+ * Capitalizes the first letter of a word.
+ *
+ * @param {string} word - Word to capitalize.
+ * @returns {string} Word with first letter capitalized.
+ */
 function firstCharToUpperCase(word) {
   return `${word.charAt(0).toUpperCase()}${word.slice(1)}`;
 }
 
+/**
+ * Creates an error message for the pull request and sets failed status.
+ *
+ * @param {object} coveragesInfo - Object containing coverage info.
+ * @returns {string} Error message string.
+ */
 export function createErrorMessageAndSetFailedStatus(coveragesInfo) {
   let errorMessage = '';
   for (const [coverageType, coverageInfo] of Object.entries(coveragesInfo).filter(
