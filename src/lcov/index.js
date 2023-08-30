@@ -87,9 +87,6 @@ export async function summarize(mergedCoverageFile) {
       stdout: (data) => {
         output += data.toString();
       },
-      stderr: (data) => {
-        output += data.toString();
-      },
     },
   };
 
@@ -112,9 +109,6 @@ export async function detail(coverageFile, changedFiles) {
   const options = {
     listeners: {
       stdout: (data) => {
-        output += data.toString();
-      },
-      stderr: (data) => {
         output += data.toString();
       },
     },
