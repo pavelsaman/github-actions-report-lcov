@@ -24,7 +24,7 @@ export async function listFiles(path) {
  * @returns {string} The header markdown
  */
 export function buildHeader(isMinimumCoverageReached, sha) {
-  const emoji = isMinimumCoverageReached ? '' : ':no_entry:';
+  const emoji = isMinimumCoverageReached ? '' : config.failureEmoji;
   const commitLink = `[<code>${sha.short}</code>](${github.context.payload.pull_request.number}/commits/${sha.full})`;
   return `## ${emoji} Code coverage of commit ${commitLink}\n\n`;
 }
@@ -114,12 +114,12 @@ export function createErrorMessageAndSetFailedStatus(coveragesInfo) {
   for (const [coverageType, coverageInfo] of Object.entries(coveragesInfo).filter(
     ([_coverageTypes, coverageInfo]) => !coverageInfo.isMinimumCoverageReached,
   )) {
-    errorMessage += `:no_entry: ${firstCharToUpperCase(coverageType)} coverage: **${
+    errorMessage += `${config.failureEmoji} ${firstCharToUpperCase(coverageType)} coverage: **${
       coverageInfo.coverage
     }** %. Expected at least **${coverageInfo.minCoverage}** %.\n\n`;
   }
   if (errorMessage) {
-    core.setFailed(errorMessage.replace(/\*/g, '').replace(/:no_entry:/g, ''));
+    core.setFailed(errorMessage.replace(/\*/g, '').replace(new RegExp(config.failureEmoji, 'g'), ''));
   }
   return errorMessage;
 }

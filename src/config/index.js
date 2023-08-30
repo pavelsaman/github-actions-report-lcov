@@ -4,6 +4,7 @@ export const config = {
   newline: /\r?\n/,
   common_lcov_args: ['--rc', 'lcov_branch_coverage=1'],
   action_msg_prefix: 'code coverage gh action:',
+  failureEmoji: ':no_entry:',
 };
 
 export const inputs = {
