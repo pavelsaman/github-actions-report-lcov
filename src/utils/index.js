@@ -123,3 +123,14 @@ export function createErrorMessageAndSetFailedStatus(coveragesInfo) {
   }
   return errorMessage;
 }
+
+/**
+ * Set the coverage output values for the GitHub action.
+ *
+ * @param {Object} totalCoverages - Object containing total coverage percentages.
+ */
+export function setCoverageOutputs(totalCoverages) {
+  core.setOutput('total-line-coverage', totalCoverages.totalLineCov);
+  core.setOutput('total-branch-coverage', totalCoverages.totalBranchCov);
+  core.setOutput('total-function-coverage', totalCoverages.totalFunctionCov);
+}

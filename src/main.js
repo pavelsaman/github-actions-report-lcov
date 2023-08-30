@@ -12,6 +12,7 @@ import {
   findFailedCoverages,
   listFiles,
   runningInPullRequest,
+  setCoverageOutputs,
 } from './utils';
 
 async function run() {
@@ -26,8 +27,7 @@ async function run() {
     const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpDir);
     const totalCoverages = totalCoverage(mergedCoverageFile);
     const coverageInfo = findFailedCoverages(totalCoverages);
-    const isMinimumCoverageReached =
-      Object.values(coverageInfo).filter((c) => !c.isMinimumCoverageReached).length === 0;
+    const isMinimumCoverageReached = Object.values(coverageInfo).every((c) => c.isMinimumCoverageReached);
 
     if (inputs.gitHubToken && runningInPullRequest()) {
       const octokit = github.getOctokit(inputs.gitHubToken);
@@ -54,9 +54,7 @@ async function run() {
       generateHTMLAndUpload(coverageFiles, inputs.artifactName, tmpDir);
     }
 
-    core.setOutput('total-line-coverage', totalCoverages.totalLineCov);
-    core.setOutput('total-branch-coverage', totalCoverages.totalBranchCov);
-    core.setOutput('total-function-coverage', totalCoverages.totalFunctionCov);
+    setCoverageOutputs(totalCoverages);
   } catch (error) {
     core.setFailed(`${config.action_msg_prefix} ${error.message}`);
   }
