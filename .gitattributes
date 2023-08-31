@@ -1,3 +1,3 @@
-dist/** -diff linguist-generated=true
+dist/** linguist-generated=true
 assets/*.png binary 
-* text=auto eol=lf
+* text eol=lf
