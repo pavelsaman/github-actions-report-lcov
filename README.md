@@ -2,9 +2,9 @@
 
 This GitHub Action reports code coverage from LCOV files. This action includes:
 
+- failing if a minimum coverage is not met
 - commenting on a pull request
 - generating an HTML report as an artifact
-- failing if a minimum coverage is not met
 
 [![Test and Build](https://github.com/sli-do/action-report-lcov/actions/workflows/test-and-build.yml/badge.svg?branch=main)](https://github.com/sli-do/action-report-lcov/actions/workflows/test-and-build.yml)
 
@@ -35,7 +35,7 @@ jobs:
   coverage_report:
     name: Generate coverage report
     needs: test-job
-    # Linux and macOS are supported
+    # Linux and macOS runners are supported
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
