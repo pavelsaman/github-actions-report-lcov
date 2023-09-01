@@ -128,7 +128,7 @@ export function createErrorMessageAndSetFailedStatus(coveragesInfo) {
   )) {
     errorMessage += `${config.failureEmoji} ${firstCharToUpperCase(coverageType)} coverage: **${
       coverageInfo.coverage
-    }** %. Expected at least **${coverageInfo.minCoverage}** %.\n\n`;
+    }** %. Expected at least **${coverageInfo.minCoverage}** %.`;
   }
   if (errorMessage) {
     core.setFailed(errorMessage.replace(/\*/g, '').replace(new RegExp(config.failureEmoji, 'g'), ''));
