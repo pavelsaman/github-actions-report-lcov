@@ -17,7 +17,7 @@ export async function listFiles(path) {
 }
 
 /**
- * Builds the PR comment header section.
+ * Builds the PR comment header section
  *
  * @param {boolean} isMinimumCoverage - If minimum coverage is reached
  * @param {object} sha - The object with short and full sha
@@ -30,7 +30,7 @@ export function buildHeader(isMinimumCoverageReached, sha) {
 }
 
 /**
- * Builds the PR comment body string.
+ * Builds the PR comment body string
  *
  * @param {object} params Parameters including header, summary, details, and errorMessage
  * @returns {string} The message body markdown
@@ -54,7 +54,7 @@ export function buildMessageBody(params) {
 }
 
 /**
- * Checks if the action is running in a pull request context.
+ * Checks if the action is running in a pull request context
  *
  * @returns {boolean} True if running in PR, false otherwise
  */
@@ -63,7 +63,7 @@ export function runningInPullRequest() {
 }
 
 /**
- * Creates a temp directory in the workspace.
+ * Creates a temp directory in the workspace
  *
  * @returns {string} The temp directory path
  */
@@ -80,10 +80,10 @@ export function createTempDir() {
 }
 
 /**
- * Returns coverage info for all three types of coverage.
+ * Returns coverage info for all three types of coverage
  *
- * @param {object} totalCoverages - Object containing total coverage percentages.
- * @returns {object} Object containing coverage info for line, function, and branch coverage.
+ * @param {object} totalCoverages - Object containing total coverage percentages
+ * @returns {object} Object containing coverage info for line, function, and branch coverage
  */
 export function findFailedCoverages(totalCoverages) {
   return {
@@ -106,20 +106,20 @@ export function findFailedCoverages(totalCoverages) {
 }
 
 /**
- * Capitalizes the first letter of a word.
+ * Capitalizes the first letter of a word
  *
- * @param {string} word - Word to capitalize.
- * @returns {string} Word with first letter capitalized.
+ * @param {string} word - Word to capitalize
+ * @returns {string} Word with first letter capitalized
  */
 function firstCharToUpperCase(word) {
   return `${word.charAt(0).toUpperCase()}${word.slice(1)}`;
 }
 
 /**
- * Creates an error message for the pull request and sets failed status.
+ * Creates an error message for the pull request and sets failed status
  *
- * @param {object} coveragesInfo - Object containing coverage info.
- * @returns {string} Error message string.
+ * @param {object} coveragesInfo - Object containing coverage info
+ * @returns {string} Error message string
  */
 export function createErrorMessageAndSetFailedStatus(coveragesInfo) {
   let errorMessage = '';
@@ -137,9 +137,9 @@ export function createErrorMessageAndSetFailedStatus(coveragesInfo) {
 }
 
 /**
- * Set the coverage output values for the GitHub action.
+ * Set the coverage output values for the GitHub action
  *
- * @param {Object} totalCoverages - Object containing total coverage percentages.
+ * @param {Object} totalCoverages - Object containing total coverage percentages
  */
 export function setCoverageOutputs(totalCoverages) {
   core.setOutput('total-line-coverage', totalCoverages.totalLineCov);

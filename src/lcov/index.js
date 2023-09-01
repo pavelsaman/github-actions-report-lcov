@@ -5,7 +5,7 @@ import { config, inputs } from '../config';
 import { listFiles } from '../utils';
 
 /**
- * Checks if a line refers to a changed file.
+ * Checks if a line refers to a changed file
  *
  * @param {string} lineWithFilename - The line containing a filename
  * @param {string[]} changedFiles - List of changed file paths
@@ -16,7 +16,7 @@ function lineRefersToChangedFile(lineWithFilename, changedFiles) {
 }
 
 /**
- * Checks if the last directory is not present in output lines.
+ * Checks if the last directory is not present in output lines
  *
  * @param {string} dir - The directory path to check for
  * @param {string[]} output - Array of output lines
@@ -27,7 +27,7 @@ function lastDirNotInOutput(dir, output) {
 }
 
 /**
- * Get the directory name from a line if present.
+ * Get the directory name from a line if present
  *
  * @param {string} line - The input line to parse
  * @returns {string|undefined} The directory name if there could be directory names and the line starts with '[', otherwise undefined
@@ -40,7 +40,7 @@ function getDirectory(line) {
 }
 
 /**
- * Generates HTML coverage report and uploads artifact.
+ * Generates HTML coverage report and uploads artifact
  *
  * @param {string[]} coverageFiles - List of coverage files
  * @param {string} artifactName - Name of artifact
@@ -57,7 +57,7 @@ export async function generateHTMLAndUpload(coverageFiles, artifactName, tmpPath
 }
 
 /**
- * Merges coverage data files into a single file.
+ * Merges coverage data files into a single file
  *
  * @param {string[]} coverageFiles - List of coverage files
  * @param {string} tmpPath - Temp directory path
@@ -75,7 +75,7 @@ export async function mergeCoverages(coverageFiles, tmpPath) {
 }
 
 /**
- * Generates a coverage summary from a merged coverage file.
+ * Generates a coverage summary from a merged coverage file
  *
  * @param {string} mergedCoverageFile - Path to merged coverage file
  * @returns {Promise<string[]>} The coverage summary
@@ -89,7 +89,7 @@ export async function summarize(mergedCoverageFile) {
 }
 
 /**
- * Generates detailed coverage info for changed files.
+ * Generates detailed coverage info for changed files
  *
  * @param {string} coverageFile - Path to coverage file
  * @param {string[]} changedFiles - List of changed files

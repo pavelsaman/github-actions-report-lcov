@@ -1,7 +1,7 @@
 import * as github from '@actions/github';
 
 /**
- * Gets existing coverage comment on pull request.
+ * Gets existing coverage comment on pull request
  *
  * @param {Object} octokitInstance - Octokit instance
  * @returns {Promise<Object|undefined>} The existing comment object
@@ -17,7 +17,7 @@ async function getExistingPullRequestComment(octokitInstance) {
 }
 
 /**
- * Gets commit SHA information.
+ * Gets commit SHA information
  *
  * @returns {{full: string, short: string}} The commit object with full and short SHA
  */
@@ -30,7 +30,7 @@ export function sha() {
 }
 
 /**
- * Gets changed filenames for a pull request.
+ * Gets changed filenames for a pull request
  *
  * @param {Object} octokitInstance - Octokit instance
  * @returns {Promise<string[]>} Changed filenames
@@ -46,7 +46,7 @@ export async function getChangedFilenames(octokitInstance) {
 }
 
 /**
- * Comments on a pull request.
+ * Comments on a pull request
  *
  * @param {Object} params - Parameters including updateComment, body, Octokit instance
  */
