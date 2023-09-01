@@ -42,7 +42,7 @@ export function buildMessageBody(params) {
   const detailsHaveMoreThanHeader = details.length > config.detailsHeaderSize;
   const detailsHaveManyLines = details.length > config.collapseDetailsIfLines;
   if (detailsHaveMoreThanHeader) {
-    detailedInfo = `\n\n### Changed files coverage rate\n\n<pre>${details.join('\n')}</pre>`;
+    detailedInfo = `\n\n#### Changed files coverage rate:\n\n<pre>${details.join('\n')}</pre>`;
   }
   if (detailsHaveMoreThanHeader && detailsHaveManyLines) {
     detailedInfo = `\n\n<details><summary>Changed files coverage rate</summary><pre>${details.join(
@@ -50,7 +50,7 @@ export function buildMessageBody(params) {
     )}</pre><details>`;
   }
 
-  return `${header}<pre>${summary.join('\n')}</pre>${detailedInfo}\n\n${errorMessage}`;
+  return `${header}#### Summary coverage rate:\n\n<pre>${summary.join('\n')}</pre>\n\n${errorMessage}${detailedInfo}`;
 }
 
 /**

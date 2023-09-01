@@ -84,7 +84,8 @@ export async function summarize(mergedCoverageFile) {
   const output = await exec.getExecOutput('lcov', ['--summary', mergedCoverageFile, ...config.common_lcov_args]);
   const lines = output.stdout.trim().split(config.newline);
   lines.shift(); // remove debug info
-  return lines;
+  lines.shift(); // remove section title
+  return lines.map((line) => line.trim());
 }
 
 /**
