@@ -5,6 +5,8 @@ export const config = {
   common_lcov_args: ['--rc', 'lcov_branch_coverage=1'],
   action_msg_prefix: 'code coverage gh action:',
   failureEmoji: ':no_entry:',
+  detailsHeaderSize: 3,
+  collapseDetailsIfLines: 10,
 };
 
 export const inputs = {

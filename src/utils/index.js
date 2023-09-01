@@ -37,7 +37,20 @@ export function buildHeader(isMinimumCoverageReached, sha) {
  */
 export function buildMessageBody(params) {
   const { header, summary, details, errorMessage } = params;
-  return `${header}<pre>${summary}\n\nChanged files coverage rate: ${details}</pre>\n\n${errorMessage}`;
+
+  let detailedInfo = '';
+  const detailsHaveMoreThanHeader = details.length > config.detailsHeaderSize;
+  const detailsHaveManyLines = details.length > config.collapseDetailsIfLines;
+  if (detailsHaveMoreThanHeader) {
+    detailedInfo = `\n\n### Changed files coverage rate\n\n<pre>${details.join('\n')}</pre>`;
+  }
+  if (detailsHaveMoreThanHeader && detailsHaveManyLines) {
+    detailedInfo = `\n\n<details><summary>Changed files coverage rate</summary><pre>${details.join(
+      '\n',
+    )}</pre><details>`;
+  }
+
+  return `${header}<pre>${summary.join('\n')}</pre>${detailedInfo}\n\n${errorMessage}`;
 }
 
 /**

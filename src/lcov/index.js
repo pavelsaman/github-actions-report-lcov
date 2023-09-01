@@ -78,13 +78,13 @@ export async function mergeCoverages(coverageFiles, tmpPath) {
  * Generates a coverage summary from a merged coverage file.
  *
  * @param {string} mergedCoverageFile - Path to merged coverage file
- * @returns {Promise<string>} The coverage summary
+ * @returns {Promise<string[]>} The coverage summary
  */
 export async function summarize(mergedCoverageFile) {
   const output = await exec.getExecOutput('lcov', ['--summary', mergedCoverageFile, ...config.common_lcov_args]);
   const lines = output.stdout.trim().split(config.newline);
   lines.shift(); // remove debug info
-  return lines.join('\n');
+  return lines;
 }
 
 /**
@@ -92,7 +92,7 @@ export async function summarize(mergedCoverageFile) {
  *
  * @param {string} coverageFile - Path to coverage file
  * @param {string[]} changedFiles - List of changed files
- * @returns {Promise<string>} The detailed coverage info
+ * @returns {Promise<string[]>} The detailed coverage info
  */
 export async function detail(coverageFile, changedFiles) {
   const args = inputs.listFullPaths ? ['--list-full-path'] : [];
@@ -118,8 +118,6 @@ export async function detail(coverageFile, changedFiles) {
       contentLines.push(line);
     }
   }
-  const finalLines = [...headerLines, ...contentLines];
 
-  const onlyHeaderRemains = finalLines.length === 3;
-  return onlyHeaderRemains ? 'n/a' : `\n  ${finalLines.join('\n  ')}`;
+  return [...headerLines, ...contentLines];
 }
