@@ -59,8 +59,7 @@ export function buildMessageBody(params) {
  * @returns {boolean} True if running in PR, false otherwise
  */
 export function runningInPullRequest() {
-  const allowedGitHubEvents = ['pull_request', 'pull_request_target'];
-  return allowedGitHubEvents.includes(github.context.eventName);
+  return config.allowedGitHubEvents.includes(github.context.eventName);
 }
 
 /**

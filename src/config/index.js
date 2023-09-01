@@ -7,6 +7,7 @@ export const config = {
   failureEmoji: ':no_entry:',
   detailsHeaderSize: 3,
   collapseDetailsIfLines: 10,
+  allowedGitHubEvents: ['pull_request', 'pull_request_target'],
 };
 
 export const inputs = {
