@@ -8,6 +8,7 @@ export const config = {
   detailsHeaderSize: 3,
   collapseDetailsIfLines: 10,
   allowedGitHubEvents: ['pull_request', 'pull_request_target'],
+  lcovTempDirectoryName: 'lcov-tmp-dir',
 };
 
 export const inputs = {

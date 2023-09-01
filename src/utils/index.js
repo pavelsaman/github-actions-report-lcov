@@ -68,7 +68,7 @@ export function runningInPullRequest() {
  * @returns {string} The temp directory path
  */
 export function createTempDir() {
-  const tmpPath = path.join(process.env.GITHUB_WORKSPACE, 'lcov-tmp-dir');
+  const tmpPath = path.join(process.env.GITHUB_WORKSPACE, config.lcovTempDirectoryName);
 
   try {
     fs.mkdirSync(tmpPath);
