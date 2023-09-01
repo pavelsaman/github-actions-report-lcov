@@ -104,10 +104,10 @@ export async function detail(coverageFile, changedFiles) {
   lines.pop();
   lines.pop();
 
-  const headerLines = lines.slice(0, 3);
+  const headerLines = lines.slice(0, config.detailsHeaderSize);
   const contentLines = [];
   let currectDirectory = '';
-  for (const line of lines.slice(3)) {
+  for (const line of lines.slice(config.detailsHeaderSize)) {
     const directory = getDirectory(line);
     if (directory) {
       currectDirectory = directory;
