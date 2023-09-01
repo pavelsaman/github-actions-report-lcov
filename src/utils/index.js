@@ -47,7 +47,7 @@ export function buildMessageBody(params) {
   if (detailsHaveMoreThanHeader && detailsHaveManyLines) {
     detailedInfo = `\n\n<details><summary>Changed files coverage rate</summary><pre>${details.join(
       '\n',
-    )}</pre><details>`;
+    )}</pre></details>`;
   }
 
   return `${header}#### Summary coverage rate:\n\n<pre>${summary.join('\n')}</pre>\n\n${errorMessage}${detailedInfo}`;

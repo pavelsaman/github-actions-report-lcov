@@ -45,7 +45,7 @@ Note: The size of downloaded zips can differ significantly from the reported siz
 `)}</pre>`),s&&d&&(p=`
 
 <details><summary>Changed files coverage rate</summary><pre>${r.join(`
-`)}</pre><details>`),`${t}#### Summary coverage rate:
+`)}</pre></details>`),`${t}#### Summary coverage rate:
 
 <pre>${a.join(`
 `)}</pre>
