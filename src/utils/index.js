@@ -43,7 +43,8 @@ export function buildMessageBody(params) {
   const detailsHaveManyLines = details.length > config.collapseDetailsIfLines;
   if (detailsHaveMoreThanHeader) {
     detailedInfo = `\n\n#### Changed files coverage rate:\n\n<pre>${details.join('\n')}</pre>`;
-  } else if (detailsHaveMoreThanHeader && detailsHaveManyLines) {
+  }
+  if (detailsHaveManyLines) {
     detailedInfo = `\n\n<details><summary>Changed files coverage rate</summary><pre>${details.join(
       '\n',
     )}</pre></details>`;
