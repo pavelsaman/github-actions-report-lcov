@@ -52,7 +52,6 @@ async function createDetailTable(coverageData) {
       `${coverageDetails.totalFunctionCov} %`,
     ];
   });
-  console.log(JSON.stringify(tableRows));
 
   await core.summary.clear();
   const heading = core.summary.addHeading('Changed files coverage rate', 3).addEOL().stringify();
