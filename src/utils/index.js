@@ -36,35 +36,40 @@ export function buildHeader(isMinimumCoverageReached, sha) {
  * @returns {Promise<string>} The formatted detail table as a string
  */
 async function createDetailTable(coverageData) {
-  const fileCoverageResultsExist = Object.keys(coverageData.files ?? {}).length > 0;
+  const files = coverageData.files ?? {};
+  const noFileCoverageResults = Object.keys(files).length === 0;
 
-  if (!fileCoverageResultsExist) {
+  if (noFileCoverageResults) {
     return '';
   }
 
-  const details = [[{ data: 'File', header: true }, ...config.prCommentTableHeader]];
-  for (const [file, coverageDetails] of Object.entries(coverageData.files)) {
-    details.push([
+  const tableHeader = [{ data: 'File', header: true }, ...config.prCommentTableHeader];
+  const tableRows = Object.entries(files).map(([file, coverageDetails]) => {
+    return [
       file,
       `${coverageDetails.totalLineCov} %`,
       `${coverageDetails.totalBranchCov} %`,
       `${coverageDetails.totalFunctionCov} %`,
-    ]);
-  }
+    ];
+  });
+  console.log(JSON.stringify(tableRows));
+
+  await core.summary.clear();
+  const heading = core.summary.addHeading('Changed files coverage rate', 3).addEOL().stringify();
+  await core.summary.clear();
+
+  const table = core.summary
+    .addTable([tableHeader, ...tableRows])
+    .addEOL()
+    .stringify();
+  await core.summary.clear();
 
   const detailsHaveManyLines = Object.keys(coverageData.files).length > config.collapseDetailsIfLines;
-
-  await core.summary.clear();
-  const detailHeading = core.summary.addHeading('Changed files coverage rate', 3).addEOL().stringify();
-  await core.summary.clear();
-
-  let detailTable = core.summary.addTable(details).addEOL().stringify();
   if (detailsHaveManyLines) {
-    detailTable = `<details><summary>Click to see details</summary>${detailTable}</details>`;
+    return `<details><summary>Click to see details</summary>${table}</details>`;
   }
-  await core.summary.clear();
 
-  return `${detailHeading}${detailTable}`;
+  return `${heading}${table}`;
 }
 
 /**
@@ -75,7 +80,7 @@ async function createDetailTable(coverageData) {
  */
 async function createSummaryTable(coverageData) {
   await core.summary.clear();
-  const summaryTable = core.summary
+  const table = core.summary
     .addHeading('Summary coverage rate', 3)
     .addTable([
       config.prCommentTableHeader,
@@ -84,7 +89,7 @@ async function createSummaryTable(coverageData) {
     .addEOL()
     .stringify();
   await core.summary.clear();
-  return summaryTable;
+  return table;
 }
 
 /**
