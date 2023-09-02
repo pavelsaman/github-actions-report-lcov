@@ -29,7 +29,13 @@ async function run() {
   let totalCoverages;
   if (inputs.gitHubToken) {
     octokit = github.getOctokit(inputs.gitHubToken);
-    totalCoverages = totalCoverage(mergedCoverageFile, ['apps/api/src/account-authorization.ts']);
+    totalCoverages = totalCoverage(mergedCoverageFile, [
+      'apps/api/src/account-authorization.ts',
+      'apps/api/src/scim-authorization.ts',
+      'apps/api/src/scim-logging.ts',
+      'apps/api/src/constants/access-tokens.ts',
+      'apps/api/src/controllers/event-analytics-v1.ts',
+    ]);
   } else {
     totalCoverages = totalCoverage(mergedCoverageFile);
   }

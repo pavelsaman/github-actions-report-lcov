@@ -6,7 +6,7 @@ export const config = {
   action_msg_prefix: 'code coverage gh action:',
   failureEmoji: ':no_entry:',
   detailsHeaderSize: 3,
-  collapseDetailsIfLines: 10,
+  collapseDetailsIfLines: 3,
   allowedGitHubEvents: ['pull_request', 'pull_request_target'],
   lcovTempDirectoryName: 'lcov-tmp-dir',
   prCommentTableHeader: [

@@ -29,7 +29,7 @@ export function buildHeader(isMinimumCoverageReached, sha) {
   return `## ${emoji} Code coverage of commit ${commitLink}\n\n`;
 }
 
-function createDetailTable(coverageData) {
+async function createDetailTable(coverageData) {
   const fileCoverageResultsExist = Object.keys(coverageData.files ?? {}).length > 0;
 
   if (!fileCoverageResultsExist) {
@@ -46,17 +46,23 @@ function createDetailTable(coverageData) {
     ]);
   }
 
-  let detailTable = core.summary.addHeading('Changed files coverage rate', 3).addTable(details).addEOL().stringify();
   const detailsHaveManyLines = Object.keys(coverageData.files).length > config.collapseDetailsIfLines;
+
+  await core.summary.clear();
+  const detailHeading = core.summary.addHeading('Changed files coverage rate', 3).addEOL().stringify();
+  await core.summary.clear();
+  let detailTable = core.summary.addTable(details).addEOL().stringify();
   if (detailsHaveManyLines) {
     detailTable = `<details><summary>Click to see details</summary>${detailTable}</details>`;
   }
 
-  return detailTable;
+  await core.summary.clear();
+  return `${detailHeading}${detailTable}`;
 }
 
-function createSummaryTable(coverageData) {
-  return core.summary
+async function createSummaryTable(coverageData) {
+  await core.summary.clear();
+  const summaryTable = core.summary
     .addHeading('Summary coverage rate', 3)
     .addTable([
       config.prCommentTableHeader,
@@ -64,6 +70,8 @@ function createSummaryTable(coverageData) {
     ])
     .addEOL()
     .stringify();
+  await core.summary.clear();
+  return summaryTable;
 }
 
 /**
@@ -75,9 +83,8 @@ function createSummaryTable(coverageData) {
 export async function buildMessageBody(params) {
   const { header, coverageData, errorMessage } = params;
 
-  const summaryTable = createSummaryTable(coverageData);
-  await core.summary.clear();
-  const detailTable = createDetailTable(coverageData);
+  const summaryTable = await createSummaryTable(coverageData);
+  const detailTable = await createDetailTable(coverageData);
 
   return `${header}\n\n${summaryTable}${errorMessage}\n\n${detailTable}`;
 }
