@@ -9,6 +9,11 @@ export const config = {
   collapseDetailsIfLines: 10,
   allowedGitHubEvents: ['pull_request', 'pull_request_target'],
   lcovTempDirectoryName: 'lcov-tmp-dir',
+  prCommentTableHeader: [
+    { data: 'Line cov', header: true },
+    { data: 'Branch cov', header: true },
+    { data: 'Function cov', header: true },
+  ],
 };
 
 export const inputs = {

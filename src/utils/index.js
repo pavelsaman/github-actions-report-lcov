@@ -29,6 +29,43 @@ export function buildHeader(isMinimumCoverageReached, sha) {
   return `## ${emoji} Code coverage of commit ${commitLink}\n\n`;
 }
 
+function createDetailTable(coverageData) {
+  const fileCoverageResultsExist = Object.keys(coverageData.files ?? {}).length > 0;
+
+  if (!fileCoverageResultsExist) {
+    return '';
+  }
+
+  const details = [[{ data: 'File', header: true }, ...config.prCommentTableHeader]];
+  for (const [file, coverageDetails] of Object.entries(coverageData.files)) {
+    details.push([
+      file,
+      `${coverageDetails.totalLineCov} %`,
+      `${coverageDetails.totalBranchCov} %`,
+      `${coverageDetails.totalFunctionCov} %`,
+    ]);
+  }
+
+  let detailTable = core.summary.addHeading('Changed files coverage rate', 3).addTable(details).addEOL().stringify();
+  const detailsHaveManyLines = Object.keys(coverageData.files).length > config.collapseDetailsIfLines;
+  if (detailsHaveManyLines) {
+    detailTable = `<details><summary>Click to see details</summary>${detailTable}</details>`;
+  }
+
+  return detailTable;
+}
+
+function createSummaryTable(coverageData) {
+  return core.summary
+    .addHeading('Summary coverage rate', 3)
+    .addTable([
+      config.prCommentTableHeader,
+      [`${coverageData.totalLineCov} %`, `${coverageData.totalBranchCov} %`, `${coverageData.totalFunctionCov} %`],
+    ])
+    .addEOL()
+    .stringify();
+}
+
 /**
  * Builds the PR comment body string
  *
@@ -37,42 +74,10 @@ export function buildHeader(isMinimumCoverageReached, sha) {
  */
 export async function buildMessageBody(params) {
   const { header, coverageData, errorMessage } = params;
-  const tableHeader = [
-    { data: 'Line cov', header: true },
-    { data: 'Branch cov', header: true },
-    { data: 'Function cov', header: true },
-  ];
 
-  const summaryTable = core.summary
-    .addHeading('Summary coverage rate', 3)
-    .addTable([
-      tableHeader,
-      [`${coverageData.totalLineCov} %`, `${coverageData.totalBranchCov} %`, `${coverageData.totalFunctionCov} %`],
-    ])
-    .addEOL()
-    .stringify();
+  const summaryTable = createSummaryTable(coverageData);
   await core.summary.clear();
-
-  let detailTable = '';
-  const fileCoverageResultsExist = Object.keys(coverageData.files ?? {}).length > 0;
-
-  if (fileCoverageResultsExist) {
-    const details = [[{ data: 'File', header: true }, ...tableHeader]];
-    for (const [file, coverageDetails] of Object.entries(coverageData.files)) {
-      details.push([
-        file,
-        `${coverageDetails.totalLineCov} %`,
-        `${coverageDetails.totalBranchCov} %`,
-        `${coverageDetails.totalFunctionCov} %`,
-      ]);
-    }
-
-    detailTable = core.summary.addHeading('Changed files coverage rate', 3).addTable(details).addEOL().stringify();
-    const detailsHaveManyLines = Object.keys(coverageData.files).length > config.collapseDetailsIfLines;
-    if (detailsHaveManyLines) {
-      detailTable = `<details><summary>Click to see details</summary>${detailTable}</details>`;
-    }
-  }
+  const detailTable = createDetailTable(coverageData);
 
   return `${header}\n\n${summaryTable}${errorMessage}\n\n${detailTable}`;
 }
