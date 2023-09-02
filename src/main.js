@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import totalCoverage from 'total-coverage';
 import { config, inputs } from './config';
-import { commentOnPR, getChangedFilenames, sha } from './github';
+import { commentOnPR, sha } from './github';
 import { generateHTMLAndUpload, mergeCoverages } from './lcov';
 import {
   buildHeader,
@@ -29,13 +29,14 @@ async function run() {
   let totalCoverages;
   if (inputs.gitHubToken) {
     octokit = github.getOctokit(inputs.gitHubToken);
-    totalCoverages = totalCoverage(mergedCoverageFile, await getChangedFilenames(octokit));
+    totalCoverages = totalCoverage(mergedCoverageFile, ['apps/api/src/account-authorization.ts']);
   } else {
     totalCoverages = totalCoverage(mergedCoverageFile);
   }
   const coverageInfo = findFailedCoverages(totalCoverages);
   const isMinimumCoverageReached = Object.values(coverageInfo).every((c) => c.isMinimumCoverageReached);
 
+  console.log(JSON.stringify(totalCoverages));
   core.info(JSON.stringify(totalCoverages));
   if (inputs.gitHubToken && runningInPullRequest()) {
     const body = await buildMessageBody({

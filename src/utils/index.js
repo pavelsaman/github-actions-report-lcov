@@ -54,7 +54,7 @@ export async function buildMessageBody(params) {
   await core.summary.clear();
 
   let detailTable = '';
-  const fileCoverageResultsExist = Object.keys(coverageData.files).length > 0;
+  const fileCoverageResultsExist = Object.keys(coverageData.files ?? {}).length > 0;
 
   if (fileCoverageResultsExist) {
     const details = [[{ data: 'File', header: true }, ...tableHeader]];
