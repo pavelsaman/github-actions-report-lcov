@@ -57,12 +57,13 @@ async function createDetailTable(coverageData) {
   await core.summary.clear();
   const detailHeading = core.summary.addHeading('Changed files coverage rate', 3).addEOL().stringify();
   await core.summary.clear();
+
   let detailTable = core.summary.addTable(details).addEOL().stringify();
   if (detailsHaveManyLines) {
     detailTable = `<details><summary>Click to see details</summary>${detailTable}</details>`;
   }
-
   await core.summary.clear();
+
   return `${detailHeading}${detailTable}`;
 }
 
