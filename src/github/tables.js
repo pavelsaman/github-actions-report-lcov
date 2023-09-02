@@ -37,7 +37,7 @@ export async function createDetailTable(coverageData) {
 
   const detailsHaveManyLines = Object.keys(coverageData.files).length > config.collapseDetailsIfLines;
   if (detailsHaveManyLines) {
-    return `<details><summary>Click to see details</summary>${table}</details>`;
+    return `${heading}<details><summary>Click to see details</summary>${table}</details>`;
   }
 
   return `${heading}${table}`;
