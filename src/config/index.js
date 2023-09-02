@@ -25,5 +25,4 @@ export const inputs = {
   minimumFunctionCoverage: Number(core.getInput('minimum-function-coverage')) || 0,
   gitHubToken: core.getInput('github-token'),
   workingDirectory: core.getInput('working-directory'),
-  listFullPaths: core.getInput('list-full-paths') === 'true',
 };

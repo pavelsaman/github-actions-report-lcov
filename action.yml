@@ -35,10 +35,6 @@ inputs:
     description: Whether to update existing comment. Default `false`.
     required: false
     default: 'false'
-  list-full-paths:
-    description: Whether to list full file paths in details. Default `true`.
-    required: false
-    default: 'true'
 outputs:
   total-line-coverage:
       description: Total line coverage.
