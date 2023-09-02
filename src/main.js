@@ -42,7 +42,6 @@ async function run() {
     const body = await buildMessageBody({
       header: buildHeader(isMinimumCoverageReached, sha()),
       coverageData: totalCoverages,
-      isMinimumCoverageReached,
       errorMessage: createErrorMessageAndSetFailedStatus(coverageInfo),
     });
 

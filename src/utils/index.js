@@ -172,7 +172,7 @@ function firstCharToUpperCase(word) {
 export function createErrorMessageAndSetFailedStatus(coveragesInfo) {
   let errorMessage = '';
   for (const [coverageType, coverageInfo] of Object.entries(coveragesInfo).filter(
-    ([_coverageTypes, coverageInfo]) => !coverageInfo.isMinimumCoverageReached,
+    ([_, coverageInfo]) => !coverageInfo.isMinimumCoverageReached,
   )) {
     errorMessage += `${config.failureEmoji} ${firstCharToUpperCase(coverageType)} coverage: **${
       coverageInfo.coverage
