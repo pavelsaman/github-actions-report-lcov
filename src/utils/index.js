@@ -98,7 +98,7 @@ export async function buildMessageBody(params) {
   const summaryTable = await createSummaryTable(coverageData);
   const detailTable = await createDetailTable(coverageData);
 
-  return `${header}\n\n${summaryTable}${errorMessage}\n\n${detailTable}`;
+  return `${header}${summaryTable}${errorMessage}${detailTable}`;
 }
 
 /**
