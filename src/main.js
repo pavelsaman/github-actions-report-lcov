@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import totalCoverage from 'total-coverage';
 import { config, inputs } from './config';
-import { commentOnPR, getChangedFilenames, sha } from './github';
+import { commentOnPR, getChangedFilenames, runningInPullRequest, sha } from './github';
 import { generateHTMLAndUpload, mergeCoverages } from './lcov';
 import {
   buildHeader,
@@ -11,7 +11,6 @@ import {
   createTempDir,
   findFailedCoverages,
   listFiles,
-  runningInPullRequest,
   setCoverageOutputs,
 } from './utils';
 

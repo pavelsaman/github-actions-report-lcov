@@ -4,6 +4,7 @@ import * as glob from '@actions/glob';
 import fs from 'fs';
 import * as path from 'path';
 import { config, inputs } from '../config';
+import { createDetailTable, createSummaryTable } from '../github/tables';
 
 /**
  * Lists files matching a glob pattern.
@@ -30,68 +31,6 @@ export function buildHeader(isMinimumCoverageReached, sha) {
 }
 
 /**
- * Creates a detail table showing coverage data for each file
- *
- * @param {Object} coverageData - The coverage data object
- * @returns {Promise<string>} The formatted detail table as a string
- */
-async function createDetailTable(coverageData) {
-  const files = coverageData.files ?? {};
-  const noFileCoverageResults = Object.keys(files).length === 0;
-
-  if (noFileCoverageResults) {
-    return '';
-  }
-
-  const tableHeader = [{ data: 'File', header: true }, ...config.prCommentTableHeader];
-  const tableRows = Object.entries(files).map(([file, coverageDetails]) => {
-    return [
-      file,
-      `${coverageDetails.totalLineCov} %`,
-      `${coverageDetails.totalBranchCov} %`,
-      `${coverageDetails.totalFunctionCov} %`,
-    ];
-  });
-
-  await core.summary.clear();
-  const heading = core.summary.addHeading('Changed files coverage rate', 3).addEOL().stringify();
-  await core.summary.clear();
-
-  const table = core.summary
-    .addTable([tableHeader, ...tableRows])
-    .addEOL()
-    .stringify();
-  await core.summary.clear();
-
-  const detailsHaveManyLines = Object.keys(coverageData.files).length > config.collapseDetailsIfLines;
-  if (detailsHaveManyLines) {
-    return `<details><summary>Click to see details</summary>${table}</details>`;
-  }
-
-  return `${heading}${table}`;
-}
-
-/**
- * Creates a summary table showing total coverage rates
- *
- * @param {Object} coverageData - The coverage data object
- * @returns {Promise<string>} The formatted summary table as a string
- */
-async function createSummaryTable(coverageData) {
-  await core.summary.clear();
-  const table = core.summary
-    .addHeading('Summary coverage rate', 3)
-    .addTable([
-      config.prCommentTableHeader,
-      [`${coverageData.totalLineCov} %`, `${coverageData.totalBranchCov} %`, `${coverageData.totalFunctionCov} %`],
-    ])
-    .addEOL()
-    .stringify();
-  await core.summary.clear();
-  return table;
-}
-
-/**
  * Builds the PR comment body string
  *
  * @param {object} params Parameters including header, coverageData, and errorMessage
@@ -104,15 +43,6 @@ export async function buildMessageBody(params) {
   const detailTable = await createDetailTable(coverageData);
 
   return `${header}${summaryTable}${errorMessage}${detailTable}`;
-}
-
-/**
- * Checks if the action is running in a pull request context
- *
- * @returns {boolean} True if running in PR, false otherwise
- */
-export function runningInPullRequest() {
-  return config.allowedGitHubEvents.includes(github.context.eventName);
 }
 
 /**

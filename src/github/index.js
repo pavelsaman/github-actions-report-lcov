@@ -85,3 +85,12 @@ export async function commentOnPR(params) {
     core.warning(`${config.action_msg_prefix} cannot post comment to the PR, error: ${err.message}`);
   }
 }
+
+/**
+ * Checks if the action is running in a pull request context
+ *
+ * @returns {boolean} True if running in PR, false otherwise
+ */
+export function runningInPullRequest() {
+  return config.allowedGitHubEvents.includes(github.context.eventName);
+}
