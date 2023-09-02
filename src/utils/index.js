@@ -181,7 +181,7 @@ export function createErrorMessageAndSetFailedStatus(coveragesInfo) {
   if (errorMessage) {
     core.setFailed(errorMessage.replace(/\*/g, '').replace(new RegExp(config.failureEmoji, 'g'), ''));
   }
-  return errorMessage.trim();
+  return errorMessage;
 }
 
 /**
