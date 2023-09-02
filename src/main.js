@@ -36,8 +36,9 @@ async function run() {
   const coverageInfo = findFailedCoverages(totalCoverages);
   const isMinimumCoverageReached = Object.values(coverageInfo).every((c) => c.isMinimumCoverageReached);
 
+  core.info(JSON.stringify(totalCoverages));
   if (inputs.gitHubToken && runningInPullRequest()) {
-    const body = buildMessageBody({
+    const body = await buildMessageBody({
       header: buildHeader(isMinimumCoverageReached, sha()),
       coverageData: totalCoverages,
       isMinimumCoverageReached,
