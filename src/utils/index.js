@@ -179,7 +179,9 @@ export function createErrorMessageAndSetFailedStatus(coveragesInfo) {
     }** %. Expected at least **${coverageInfo.minCoverage}** %.\n\n`;
   }
   if (errorMessage) {
-    core.setFailed(errorMessage.replace(/\*/g, '').replace(new RegExp(config.failureEmoji, 'g'), ''));
+    core.setFailed(
+      errorMessage.replace(/\*/g, '').replace(new RegExp(config.failureEmoji, 'g'), '').replace(/\n\n/g, ' '),
+    );
   }
   return errorMessage;
 }
