@@ -40,7 +40,7 @@ export async function buildMessageBody(params) {
 
   const summaryTable = core.summary
     .addHeading(header)
-    .addTable(
+    .addTable([
       [
         { data: 'Coverage type', header: true },
         { data: 'Rate', header: true },
@@ -50,7 +50,7 @@ export async function buildMessageBody(params) {
         ['functions', coverageData.totalFunctionCov],
         ['branches', coverageData.totalBranchCov],
       ],
-    )
+    ])
     .stringify();
 
   // let detailedInfo = '';
