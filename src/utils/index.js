@@ -32,25 +32,41 @@ export function buildHeader(isMinimumCoverageReached, sha) {
 /**
  * Builds the PR comment body string
  *
- * @param {object} params Parameters including header, summary, details, and errorMessage
+ * @param {object} params Parameters including header, coverageData, and errorMessage
  * @returns {string} The message body markdown
  */
-export function buildMessageBody(params) {
-  const { header, summary, details, errorMessage } = params;
+export async function buildMessageBody(params) {
+  const { header, coverageData, _errorMessage } = params;
 
-  let detailedInfo = '';
-  const detailsHaveMoreThanHeader = details.length > config.detailsHeaderSize;
-  const detailsHaveManyLines = details.length > config.collapseDetailsIfLines;
-  if (detailsHaveMoreThanHeader) {
-    detailedInfo = `\n\n#### Changed files coverage rate:\n\n<pre>${details.join('\n')}</pre>`;
-  }
-  if (detailsHaveManyLines) {
-    detailedInfo = `\n\n<details><summary>Changed files coverage rate</summary><pre>${details.join(
-      '\n',
-    )}</pre></details>`;
-  }
+  const summaryTable = core.summary
+    .addHeading(header)
+    .addTable(
+      [
+        { data: 'Coverage type', header: true },
+        { data: 'Rate', header: true },
+      ],
+      [
+        ['lines', coverageData.totalLineCov],
+        ['functions', coverageData.totalFunctionCov],
+        ['branches', coverageData.totalBranchCov],
+      ],
+    )
+    .stringify();
 
-  return `${header}#### Summary coverage rate:\n\n<pre>${summary.join('\n')}</pre>\n\n${errorMessage}${detailedInfo}`;
+  // let detailedInfo = '';
+  // const detailsHaveMoreThanHeader = details.length > config.detailsHeaderSize;
+  // const detailsHaveManyLines = details.length > config.collapseDetailsIfLines;
+  // if (detailsHaveMoreThanHeader) {
+  //   detailedInfo = `\n\n#### Changed files coverage rate:\n\n<pre>${details.join('\n')}</pre>`;
+  // }
+  // if (detailsHaveManyLines) {
+  //   detailedInfo = `\n\n<details><summary>Changed files coverage rate</summary><pre>${details.join(
+  //     '\n',
+  //   )}</pre></details>`;
+  // }
+
+  // return `${header}#### Summary coverage rate:\n\n<pre>${summary.join('\n')}</pre>\n\n${errorMessage}${detailedInfo}`;
+  return `${header}#### Summary coverage rate:\n\n${summaryTable}`;
 }
 
 /**

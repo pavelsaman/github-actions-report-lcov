@@ -1,4 +1,6 @@
+import * as core from '@actions/core';
 import * as github from '@actions/github';
+import { config } from '../config';
 
 /**
  * Gets existing coverage comment on pull request
@@ -7,13 +9,17 @@ import * as github from '@actions/github';
  * @returns {Promise<Object|undefined>} The existing comment object
  */
 async function getExistingPullRequestComment(octokitInstance) {
-  const issueComments = await octokitInstance.rest.issues.listComments({
-    repo: github.context.repo.repo,
-    owner: github.context.repo.owner,
-    issue_number: github.context.payload.pull_request.number,
-  });
-
-  return issueComments.data.find((comment) => comment.body.includes('Code coverage'));
+  try {
+    const issueComments = await octokitInstance.rest.issues.listComments({
+      repo: github.context.repo.repo,
+      owner: github.context.repo.owner,
+      issue_number: github.context.payload.pull_request.number,
+    });
+    return issueComments.data.find((comment) => comment.body.includes('Code coverage'));
+  } catch (err) {
+    core.warning(`${config.action_msg_prefix} cannot get current PR comments, error: ${err.message}`);
+  }
+  return undefined;
 }
 
 /**
@@ -36,13 +42,19 @@ export function sha() {
  * @returns {Promise<string[]>} Changed filenames
  */
 export async function getChangedFilenames(octokitInstance) {
-  const listFilesOptions = octokitInstance.rest.pulls.listFiles.endpoint.merge({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
-    pull_number: github.context.payload.pull_request.number,
-  });
-  const listFilesResponse = await octokitInstance.paginate(listFilesOptions);
-  return listFilesResponse.map((file) => file.filename);
+  try {
+    const listFilesOptions = octokitInstance.rest.pulls.listFiles.endpoint.merge({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      pull_number: github.context.payload.pull_request.number,
+    });
+    const listFilesResponse = await octokitInstance.paginate(listFilesOptions);
+    return listFilesResponse.map((file) => file.filename);
+  } catch (err) {
+    core.warning(`${config.action_msg_prefix} cannot list changed files in the PR, error: ${err.message}`);
+  }
+
+  return [];
 }
 
 /**
@@ -67,5 +79,9 @@ export async function commentOnPR(params) {
       : { issue_number: github.context.payload.pull_request.number }),
   };
 
-  sendCommentToPR(data);
+  try {
+    sendCommentToPR(data);
+  } catch (err) {
+    core.warning(`${config.action_msg_prefix} cannot post comment to the PR, error: ${err.message}`);
+  }
 }
