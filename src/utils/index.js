@@ -29,6 +29,12 @@ export function buildHeader(isMinimumCoverageReached, sha) {
   return `## ${emoji} Code coverage of commit ${commitLink}\n\n`;
 }
 
+/**
+ * Creates a detail table showing coverage data for each file
+ *
+ * @param {Object} coverageData - The coverage data object
+ * @returns {Promise<string>} The formatted detail table as a string
+ */
 async function createDetailTable(coverageData) {
   const fileCoverageResultsExist = Object.keys(coverageData.files ?? {}).length > 0;
 
@@ -60,6 +66,12 @@ async function createDetailTable(coverageData) {
   return `${detailHeading}${detailTable}`;
 }
 
+/**
+ * Creates a summary table showing total coverage rates
+ *
+ * @param {Object} coverageData - The coverage data object
+ * @returns {Promise<string>} The formatted summary table as a string
+ */
 async function createSummaryTable(coverageData) {
   await core.summary.clear();
   const summaryTable = core.summary
