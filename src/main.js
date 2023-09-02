@@ -28,7 +28,7 @@ async function run() {
   let totalCoverages;
   if (inputs.gitHubToken) {
     octokit = github.getOctokit(inputs.gitHubToken);
-    totalCoverages = totalCoverage(mergedCoverageFile, await getChangedFilenames());
+    totalCoverages = totalCoverage(mergedCoverageFile, await getChangedFilenames(octokit));
   } else {
     totalCoverages = totalCoverage(mergedCoverageFile);
   }
