@@ -4,6 +4,7 @@ This GitHub Action reports code coverage from LCOV files. This action includes:
 
 - failing if a minimum coverage is not met
 - commenting on a pull request
+- commenting on the summary page
 - generating an HTML report as an artifact
 
 [![Test and Build](https://github.com/sli-do/action-report-lcov/actions/workflows/test-and-build.yml/badge.svg?branch=main)](https://github.com/sli-do/action-report-lcov/actions/workflows/test-and-build.yml)
