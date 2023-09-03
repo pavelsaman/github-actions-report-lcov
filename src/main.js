@@ -36,7 +36,7 @@ async function run() {
   const coverageInfo = findFailedCoverages(totalCoverages);
   const isMinimumCoverageReached = Object.values(coverageInfo).every((c) => c.isMinimumCoverageReached);
 
-  const body = await buildMessageBody({
+  const body = buildMessageBody({
     header: buildHeader(isMinimumCoverageReached, sha()),
     coverageData: totalCoverages,
     errorMessage: createErrorMessageAndSetFailedStatus(coverageInfo),

@@ -101,5 +101,7 @@ export function runningInPullRequest() {
  * @param {string} message - The message to post to the summary
  */
 export async function postToSummary(message) {
-  await core.summary.addRaw(message).write();
+  const summaryBuffer = core.summary.stringify();
+  await core.summary.emptyBuffer().addRaw(message).write();
+  core.summary.emptyBuffer().addRaw(summaryBuffer);
 }

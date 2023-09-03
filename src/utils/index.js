@@ -36,11 +36,11 @@ export function buildHeader(isMinimumCoverageReached, sha) {
  * @param {object} params Parameters including header, coverageData, and errorMessage
  * @returns {Promise<string>} The message body markdown
  */
-export async function buildMessageBody(params) {
+export function buildMessageBody(params) {
   const { header, coverageData, errorMessage } = params;
 
-  const summaryTable = await createSummaryTable(coverageData);
-  const detailTable = await createDetailTable(coverageData);
+  const summaryTable = createSummaryTable(coverageData);
+  const detailTable = createDetailTable(coverageData);
 
   return `${header}${summaryTable}${errorMessage}${detailTable}`;
 }

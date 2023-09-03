@@ -8,7 +8,7 @@ import { config } from '../config';
  * @param {Object} coverageData - The coverage data object
  * @returns {Promise<string>} The formatted detail table as a string
  */
-export async function createDetailTable(coverageData) {
+export function createDetailTable(coverageData) {
   const files = coverageData.files ?? {};
   const noFileCoverageResults = Object.keys(files).length === 0;
 
@@ -26,15 +26,14 @@ export async function createDetailTable(coverageData) {
     ];
   });
 
-  await core.summary.clear();
-  const heading = core.summary.addHeading('Changed files coverage rate', 3).addEOL().stringify();
-  await core.summary.clear();
-
+  const summaryBuffer = core.summary.stringify();
+  const heading = core.summary.emptyBuffer().addHeading('Changed files coverage rate', 3).addEOL().stringify();
   const table = core.summary
+    .emptyBuffer()
     .addTable([tableHeader, ...tableRows])
     .addEOL()
     .stringify();
-  await core.summary.clear();
+  core.summary.emptyBuffer().addRaw(summaryBuffer);
 
   const detailsHaveManyLines = Object.keys(coverageData.files).length > config.collapseDetailsIfLines;
   if (detailsHaveManyLines) {
@@ -50,9 +49,11 @@ export async function createDetailTable(coverageData) {
  * @param {Object} coverageData - The coverage data object
  * @returns {Promise<string>} The formatted summary table as a string
  */
-export async function createSummaryTable(coverageData) {
-  await core.summary.clear();
+export function createSummaryTable(coverageData) {
+  // remember current buffer content
+  const summaryBuffer = core.summary.stringify();
   const table = core.summary
+    .emptyBuffer()
     .addHeading('Summary coverage rate', 3)
     .addTable([
       config.prCommentTableHeader,
@@ -60,7 +61,8 @@ export async function createSummaryTable(coverageData) {
     ])
     .addEOL()
     .stringify();
-  await core.summary.clear();
+  // restore buffer
+  core.summary.emptyBuffer().addRaw(summaryBuffer);
   return table;
 }
 
