@@ -36,7 +36,7 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: Build
-        run: npm run build:pre && npm run build:main
+        run: npm run build
 
       - name: Check formatting
         run: npm run format:check
