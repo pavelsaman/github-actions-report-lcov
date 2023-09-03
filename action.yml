@@ -35,6 +35,10 @@ inputs:
     description: Whether to update existing comment. Default `false`.
     required: false
     default: 'false'
+  install-lcov:
+    description: Whether lcov should be installed by this action. Default `true`.
+    required: false
+    default: 'true'
 outputs:
   total-line-coverage:
     description: Total line coverage.

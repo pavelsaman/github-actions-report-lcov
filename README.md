@@ -21,6 +21,7 @@ This GitHub Action reports code coverage from LCOV files. This action includes:
 - `github-token` (optional): GitHub token to comment on PR.
 - `working-directory` (optional): Directory containing source files. Default `./`.
 - `update-comment` (optional): Whether to update existing comment. Default `false`.
+- `install-lcov` (optional): Whether lcov should be installed by this action. Default `true`.
 
 ### Outputs
 

@@ -27,4 +27,5 @@ export const inputs = {
   minimumFunctionCoverage: Number(core.getInput('minimum-function-coverage')) || 0,
   gitHubToken: core.getInput('github-token'),
   workingDirectory: core.getInput('working-directory'),
+  installLcov: core.getInput('install-lcov') === 'true',
 };
