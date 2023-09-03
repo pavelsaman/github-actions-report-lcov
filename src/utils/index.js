@@ -131,3 +131,13 @@ export function setCoverageOutputs(totalCoverages) {
   core.setOutput('total-branch-coverage', totalCoverages.totalBranchCov);
   core.setOutput('total-function-coverage', totalCoverages.totalFunctionCov);
 }
+
+/**
+ * Creates a URL to view a file at a specific commit in GitHub
+ *
+ * @param {string} file - The path to the file in the repository
+ * @returns {string} The URL to view the file
+ */
+export function createFileLink(file) {
+  return config.urlToFileAtCommit.replace('{commit}', github.context.sha).replace('{filePath}', file);
+}

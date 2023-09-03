@@ -1,5 +1,7 @@
 import * as core from '@actions/core';
 
+const repositoryUrl = `${process.env?.GITHUB_SERVER_URL}/${process.env?.GITHUB_REPOSITORY}`;
+
 export const config = {
   newline: /\r?\n/,
   common_lcov_args: ['--rc', 'lcov_branch_coverage=1'],
@@ -13,6 +15,7 @@ export const config = {
     { data: 'Branch cov', header: true },
     { data: 'Function cov', header: true },
   ],
+  urlToFileAtCommit: `${repositoryUrl}/blob/{commit}/{filePath}`,
 };
 
 export const inputs = {

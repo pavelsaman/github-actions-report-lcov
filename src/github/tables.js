@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 import { config } from '../config';
+import { createFileLink } from '../utils';
 
 /**
  * Creates a detail table showing coverage data for each file
@@ -18,7 +19,7 @@ export async function createDetailTable(coverageData) {
   const tableHeader = [{ data: 'File', header: true }, ...config.prCommentTableHeader];
   const tableRows = Object.entries(files).map(([file, coverageDetails]) => {
     return [
-      file,
+      createFileLink(file),
       `${coverageDetails.totalLineCov} %`,
       `${coverageDetails.totalBranchCov} %`,
       `${coverageDetails.totalFunctionCov} %`,
