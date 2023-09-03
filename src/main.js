@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import totalCoverage from 'total-coverage';
 import { config, inputs } from './config';
-import { commentOnPR, getChangedFilenames, runningInPullRequest, sha } from './github';
+import { commentOnPR, getChangedFilenames, postToSummary, runningInPullRequest, sha } from './github';
 import { generateHTMLAndUpload, mergeCoverages } from './lcov';
 import {
   buildHeader,
@@ -36,13 +36,12 @@ async function run() {
   const coverageInfo = findFailedCoverages(totalCoverages);
   const isMinimumCoverageReached = Object.values(coverageInfo).every((c) => c.isMinimumCoverageReached);
 
+  const body = await buildMessageBody({
+    header: buildHeader(isMinimumCoverageReached, sha()),
+    coverageData: totalCoverages,
+    errorMessage: createErrorMessageAndSetFailedStatus(coverageInfo),
+  });
   if (inputs.gitHubToken && runningInPullRequest()) {
-    const body = await buildMessageBody({
-      header: buildHeader(isMinimumCoverageReached, sha()),
-      coverageData: totalCoverages,
-      errorMessage: createErrorMessageAndSetFailedStatus(coverageInfo),
-    });
-
     commentOnPR({
       octokit,
       updateComment: inputs.updateComment,
@@ -53,6 +52,8 @@ async function run() {
       `${config.action_msg_prefix} no github-token provided or not running in a PR workflow. Skipping creating a PR comment.`,
     );
   }
+
+  postToSummary(body);
 
   setCoverageOutputs(totalCoverages);
 

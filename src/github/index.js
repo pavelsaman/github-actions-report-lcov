@@ -94,3 +94,12 @@ export async function commentOnPR(params) {
 export function runningInPullRequest() {
   return config.allowedGitHubEvents.includes(github.context.eventName);
 }
+
+/**
+ * Posts a message to the summary section of the GitHub workflow run
+ *
+ * @param {string} message - The message to post to the summary
+ */
+export async function postToSummary(message) {
+  await core.summary.addRaw(message).write();
+}
