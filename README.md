@@ -45,7 +45,7 @@ jobs:
       # if running on Windows, please install `lcov` here
 
       - name: Report code coverage
-        uses: pavelsaman/github-actions-report-lcov@v4
+        uses: pavelsaman/github-actions-report-lcov@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           coverage-files: coverage/lcov.*.info
