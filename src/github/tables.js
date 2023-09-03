@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
+import * as github from '@actions/github';
 import { config } from '../config';
-import { createFileLink } from '../utils';
 
 /**
  * Creates a detail table showing coverage data for each file
@@ -62,4 +62,15 @@ export async function createSummaryTable(coverageData) {
     .stringify();
   await core.summary.clear();
   return table;
+}
+
+/**
+ * Creates a URL to view a file at a specific commit in GitHub
+ *
+ * @param {string} file - The path to the file in the repository
+ * @returns {string} The URL to view the file
+ */
+function createFileLink(file) {
+  const fileLink = config.urlToFileAtCommit.replace('{commit}', github.context.sha).replace('{filePath}', file);
+  return `<a href="${fileLink}">${file}</a>`;
 }
