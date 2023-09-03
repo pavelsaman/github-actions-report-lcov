@@ -23,6 +23,7 @@ async function run() {
   const tmpDir = createTempDir();
 
   const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpDir);
+  core.setOutput('merged-lcov-file', mergedCoverageFile);
 
   let octokit;
   let totalCoverages;

@@ -12,20 +12,21 @@ This GitHub Action reports code coverage from LCOV files. This action includes:
 
 ### Inputs
 
-- `coverage-files` (required): Coverage files to scan (e.g. `coverage/lcov.*.info`)
+- `coverage-files` (required): Coverage files to scan (e.g. `coverage/lcov.*.info`).
 - `artifact-name` (optional): Name of generated coverage report artifact. Default is no artifact created.
 - `minimum-line-coverage` (optional): Minimum % coverage to pass check. Default `0`.
 - `minimum-branch-coverage` (optional): Minimum % coverage to pass check. Default `0`.
 - `minimum-function-coverage` (optional): Minimum % coverage to pass check. Default `0`.
 - `github-token` (optional): GitHub token to comment on PR.
-- `working-directory` (optional): Directory containing source files. Default `./`
+- `working-directory` (optional): Directory containing source files. Default `./`.
 - `update-comment` (optional): Whether to update existing comment. Default `false`.
 
 ### Outputs
 
-- `total-line-coverage`: Total line coverage
-- `total-branch-coverage`: Total branch coverage
-- `total-function-coverage`: Total function coverage
+- `total-line-coverage`: Total line coverage.
+- `total-branch-coverage`: Total branch coverage.
+- `total-function-coverage`: Total function coverage.
+- `merged-lcov-file`: Path to merged LCOV file.
 
 ### Example usage
 

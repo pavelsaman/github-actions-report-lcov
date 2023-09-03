@@ -7,7 +7,7 @@ branding:
 
 inputs:
   coverage-files:
-    description: Coverage files to scan (e.g. `coverage/lcov.*.info`)
+    description: Coverage files to scan (e.g. `coverage/lcov.*.info`).
     required: true
   artifact-name:
     description: Name of generated coverage report artifact. Default is no artifact created.
@@ -37,11 +37,13 @@ inputs:
     default: 'false'
 outputs:
   total-line-coverage:
-      description: Total line coverage.
+    description: Total line coverage.
   total-branch-coverage:
-      description: Total branch coverage.
+    description: Total branch coverage.
   total-function-coverage:
-      description: Total function coverage.
+    description: Total function coverage.
+  merged-lcov-file:
+    description: Path to merged LCOV file.
 
 runs:
   using: 'node16'
