@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
+import { execSync } from 'child_process';
 import totalCoverage from 'total-coverage';
 import { config, inputs } from './config';
 import { commentOnPR, getChangedFilenames, postToSummary, runningInPullRequest, sha } from './github';
@@ -62,4 +63,31 @@ async function run() {
   }
 }
 
-run();
+function install() {
+  try {
+    console.log('Installing lcov');
+
+    const platform = process.env.RUNNER_OS;
+    if (platform === 'Linux') {
+      execSync('sudo apt-get update');
+      execSync('sudo apt-get install --assume-yes lcov');
+    } else if (platform === 'macOS') {
+      execSync('brew install lcov');
+    }
+  } catch (error) {
+    core.setFailed(`${config.action_msg_prefix} ${error.message}`);
+  }
+}
+
+function main() {
+  if (inputs.installLcov) {
+    install();
+  }
+
+  const lcovVersion = execSync('lcov --version', { encoding: 'utf-8' });
+  console.log(lcovVersion);
+
+  run();
+}
+
+main();
