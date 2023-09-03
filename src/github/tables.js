@@ -6,7 +6,7 @@ import { config } from '../config';
  * Creates a detail table showing coverage data for each file
  *
  * @param {Object} coverageData - The coverage data object
- * @returns {Promise<string>} The formatted detail table as a string
+ * @returns {string} The formatted detail table as a string
  */
 export function createDetailTable(coverageData) {
   const files = coverageData.files ?? {};
@@ -26,6 +26,7 @@ export function createDetailTable(coverageData) {
     ];
   });
 
+  // remember current summary buffer content
   const summaryBuffer = core.summary.stringify();
   const heading = core.summary.emptyBuffer().addHeading('Changed files coverage rate', 3).addEOL().stringify();
   const table = core.summary
@@ -33,6 +34,7 @@ export function createDetailTable(coverageData) {
     .addTable([tableHeader, ...tableRows])
     .addEOL()
     .stringify();
+  // restore summary buffer
   core.summary.emptyBuffer().addRaw(summaryBuffer);
 
   const detailsHaveManyLines = Object.keys(coverageData.files).length > config.collapseDetailsIfLines;
@@ -47,10 +49,10 @@ export function createDetailTable(coverageData) {
  * Creates a summary table showing total coverage rates
  *
  * @param {Object} coverageData - The coverage data object
- * @returns {Promise<string>} The formatted summary table as a string
+ * @returns {string} The formatted summary table as a string
  */
 export function createSummaryTable(coverageData) {
-  // remember current buffer content
+  // remember current summary buffer content
   const summaryBuffer = core.summary.stringify();
   const table = core.summary
     .emptyBuffer()
@@ -61,7 +63,7 @@ export function createSummaryTable(coverageData) {
     ])
     .addEOL()
     .stringify();
-  // restore buffer
+  // restore summary buffer
   core.summary.emptyBuffer().addRaw(summaryBuffer);
   return table;
 }
