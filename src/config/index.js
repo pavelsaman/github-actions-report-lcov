@@ -7,7 +7,7 @@ export const config = {
   common_lcov_args: ['--rc', 'lcov_branch_coverage=1'],
   action_msg_prefix: 'code coverage gh action:',
   failureEmoji: ':no_entry:',
-  collapseDetailsIfLines: 10,
+  collapseDetailsIfLines: 5,
   allowedGitHubEvents: ['pull_request', 'pull_request_target'],
   lcovTempDirectoryName: 'lcov-tmp-dir',
   prCommentTableHeader: [
