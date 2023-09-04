@@ -28,4 +28,5 @@ export const inputs = {
   gitHubToken: core.getInput('github-token'),
   workingDirectory: core.getInput('working-directory'),
   installLcov: core.getInput('install-lcov') === 'true',
+  commentOnPR: core.getInput('comment-on-pr') === 'true',
 };

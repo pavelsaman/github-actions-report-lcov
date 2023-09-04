@@ -22,6 +22,7 @@ This GitHub Action reports code coverage from LCOV files. This action includes:
 - `working-directory` (optional): Directory containing source files. Default `./`.
 - `update-comment` (optional): Whether to update existing comment. Default `false`.
 - `install-lcov` (optional): Whether lcov should be installed by this action. Default `true`.
+- `comment-on-pr` (optional): Whether to create a comment in PR. Default `true`.
 
 ### Outputs
 

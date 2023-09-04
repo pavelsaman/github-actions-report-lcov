@@ -42,16 +42,12 @@ async function run() {
     coverageData: totalCoverages,
     errorMessage: createErrorMessageAndSetFailedStatus(coverageInfo),
   });
-  if (inputs.gitHubToken && runningInPullRequest()) {
+  if (inputs.gitHubToken && inputs.commentOnPR && runningInPullRequest()) {
     commentOnPR({
       octokit,
       updateComment: inputs.updateComment,
       body,
     });
-  } else {
-    core.warning(
-      `${config.action_msg_prefix} no github-token provided or not running in a PR workflow. Skipping creating a PR comment.`,
-    );
   }
 
   postToSummary(body);
