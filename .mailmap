@@ -1,0 +1,16 @@
+########################################
+#
+# Git mailmap config.
+#
+# You can enable it globally with:
+#
+#   git config --global log.mailmap true
+#
+# Find missing mappings with:
+# 
+#   git shortlog --summary --email
+#
+########################################
+
+Pavel Šaman <psaman@cisco.com> <samanpavel@gmail.com>
+Pavel Šaman <psaman@cisco.com> Pavel Saman <psaman@cisco.com>
