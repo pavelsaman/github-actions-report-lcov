@@ -17,14 +17,16 @@ export function createDetailTable(coverageData) {
   }
 
   const tableHeader = [{ data: 'File', header: true }, ...config.prCommentTableHeader];
-  const tableRows = Object.entries(files).map(([file, coverageDetails]) => {
-    return [
-      createFileLink(file),
-      `${coverageDetails.totalLineCov} %`,
-      `${coverageDetails.totalBranchCov} %`,
-      `${coverageDetails.totalFunctionCov} %`,
-    ];
-  });
+  const tableRows = Object.entries(files)
+    .sort(([fileA], [fileB]) => fileA.localeCompare(fileB))
+    .map(([file, coverageDetails]) => {
+      return [
+        createFileLink(file),
+        `${coverageDetails.totalLineCov} %`,
+        `${coverageDetails.totalBranchCov} %`,
+        `${coverageDetails.totalFunctionCov} %`,
+      ];
+    });
 
   // remember current summary buffer content
   const summaryBuffer = core.summary.stringify();
