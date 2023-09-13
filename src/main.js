@@ -1,6 +1,6 @@
+import { execSync } from 'child_process';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import { execSync } from 'child_process';
 import totalCoverage from 'total-coverage';
 import { config, inputs } from './config';
 import { commentOnPR, getChangedFilenames, postToSummary, runningInPullRequest, sha } from './github';

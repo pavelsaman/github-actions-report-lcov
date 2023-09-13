@@ -1,6 +1,6 @@
+import * as path from 'path';
 import * as artifact from '@actions/artifact';
 import * as exec from '@actions/exec';
-import * as path from 'path';
 import { config, inputs } from '../config';
 import { listFiles } from '../utils';
 

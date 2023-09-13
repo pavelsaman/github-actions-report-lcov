@@ -1,8 +1,8 @@
+import fs from 'fs';
+import * as path from 'path';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as glob from '@actions/glob';
-import fs from 'fs';
-import * as path from 'path';
 import { config, inputs } from '../config';
 import { createDetailTable, createSummaryTable } from '../github/tables';
 
