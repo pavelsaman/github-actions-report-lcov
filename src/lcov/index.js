@@ -1,24 +1,33 @@
 import * as path from 'path';
 import * as artifact from '@actions/artifact';
 import * as exec from '@actions/exec';
-import { config, inputs } from '../config';
-import { listFiles } from '../utils';
+import { config } from '../config';
 
 /**
  * Generates HTML coverage report and uploads artifact
  *
- * @param {string[]} coverageFiles - List of coverage files
+ * @param {string} mergedCoverageFile - Merged LCOV file path
  * @param {string} artifactName - Name of artifact
  * @param {string} tmpPath - Temp directory path
  */
-export async function generateHTMLAndUpload(coverageFiles, artifactName, tmpPath) {
-  const artifactPath = path.resolve(tmpPath, 'html').trim();
+export async function generateHTMLAndUpload(mergedCoverageFile, artifactName, tmpPath) {
+  const htmlReportDir = 'html';
+  const artifactPath = path.join(tmpPath, htmlReportDir);
 
-  const args = [...coverageFiles, ...config.common_lcov_args, '--output-directory', artifactPath];
-  await exec.exec('genhtml', args, { cwd: inputs.workingDirectory });
+  const args = [
+    mergedCoverageFile,
+    ...config.common_lcov_args,
+    '--output-directory',
+    artifactPath,
+    '--prefix',
+    process.env.GITHUB_WORKSPACE,
+  ];
 
-  const htmlFiles = await listFiles(`${artifactPath}/**`);
-  artifact.create().uploadArtifact(artifactName, htmlFiles, artifactPath, { continueOnError: false });
+  const tarFile = 'coverage-report.tar.gz';
+  await exec.exec('genhtml', args);
+  await exec.exec('tar', ['czf', tarFile, htmlReportDir], { cwd: tmpPath });
+
+  artifact.create().uploadArtifact(artifactName, [path.join(tmpPath, tarFile)], tmpPath, { continueOnError: false });
 }
 
 /**

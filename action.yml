@@ -27,10 +27,6 @@ inputs:
   github-token:
     description: GitHub token to comment on PR.
     required: false
-  working-directory:
-    description: Directory containing source files. Default `./`
-    required: false
-    default: './'
   update-comment:
     description: Whether to update existing comment. Default `false`.
     required: false

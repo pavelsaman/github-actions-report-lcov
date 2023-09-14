@@ -19,7 +19,6 @@ This GitHub Action reports code coverage from LCOV files. This action includes:
 - `minimum-branch-coverage` (optional): Minimum % coverage to pass check. Default `0`.
 - `minimum-function-coverage` (optional): Minimum % coverage to pass check. Default `0`.
 - `github-token` (optional): GitHub token to comment on PR.
-- `working-directory` (optional): Directory containing source files. Default `./`.
 - `update-comment` (optional): Whether to update existing comment. Default `false`.
 - `install-lcov` (optional): Whether lcov should be installed by this action. Default `true`.
 - `comment-on-pr` (optional): Whether to create a comment in PR. Default `true`.
@@ -44,6 +43,8 @@ jobs:
       - uses: actions/checkout@v3
 
       # if running on Windows, please install `lcov` here
+      # tar may need to be installed on Windows as well
+      #   tar is needed when generating an html report
 
       - name: Report code coverage
         uses: pavelsaman/github-actions-report-lcov@v5

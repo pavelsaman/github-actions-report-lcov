@@ -55,7 +55,7 @@ async function run() {
   setCoverageOutputs(totalCoverages);
 
   if (inputs.artifactName) {
-    generateHTMLAndUpload(coverageFiles, inputs.artifactName, tmpDir);
+    generateHTMLAndUpload(mergedCoverageFile, inputs.artifactName, tmpDir);
   }
 }
 

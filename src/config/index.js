@@ -26,7 +26,6 @@ export const inputs = {
   minimumBranchCoverage: Number(core.getInput('minimum-branch-coverage')) || 0,
   minimumFunctionCoverage: Number(core.getInput('minimum-function-coverage')) || 0,
   gitHubToken: core.getInput('github-token'),
-  workingDirectory: core.getInput('working-directory'),
   installLcov: core.getInput('install-lcov') === 'true',
   commentOnPR: core.getInput('comment-on-pr') === 'true',
 };
