@@ -77,3 +77,4 @@ make build
 
 Then push to remote.
 Then create a new tag or move the latest tag.
+You can use [Create new version](https://github.com/sli-do/action-report-lcov/actions/workflows/create-new-version.yml) workflow for creating a new version.

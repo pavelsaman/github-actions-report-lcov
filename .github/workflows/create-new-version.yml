@@ -1,0 +1,26 @@
+name: Create new version
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Ref for the new tag
+        required: false
+        default: ''
+        type: string
+      move-latest-tag:
+        description: Move the latest tag to ref; if no ref is provided, move to HEAD
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  create-new-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Create new tag and push
+        run: ./.github/scripts/new-version.sh "${{ inputs.ref }}" "${{ inputs.move-latest-tag }}"
