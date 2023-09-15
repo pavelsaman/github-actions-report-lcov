@@ -1,10 +1,7 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.1.2/schema.json",
   "files": {
-    "ignore": [
-      "dist/",
-      "lib/"
-    ]
+    "ignore": ["dist/", "lib/"]
   },
   "formatter": {
     "enabled": true,

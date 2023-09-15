@@ -17,17 +17,9 @@
     "type": "git",
     "url": "git+https://github.com/zgosalvez/github-actions-report-lcov.git"
   },
-  "keywords": [
-    "github",
-    "actions",
-    "node",
-    "lcov",
-    "coverage"
-  ],
+  "keywords": ["github", "actions", "node", "lcov", "coverage"],
   "author": "Zennon Gosalvez",
-  "maintainers": [
-    "Pavel Saman"
-  ],
+  "maintainers": ["Pavel Saman"],
   "engines": {
     "node": ">=16"
   },
