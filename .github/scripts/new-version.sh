@@ -28,6 +28,11 @@ function delete_latest_tag_or_create_new() {
 }
 
 function main() {
+  if [[ "$GITHUB_REF_NAME" != "main" ]]; then
+    echo "::error::New version can be created only from the main branch. Exiting."
+    exit 1
+  fi
+
   ref="$1"
   move_latest_tag="$2"
 
