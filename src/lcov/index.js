@@ -1,10 +1,11 @@
 import * as path from 'path';
 import * as artifact from '@actions/artifact';
+import * as core from '@actions/core';
 import * as exec from '@actions/exec';
 import { config } from '../config';
 
 /**
- * Generates HTML coverage report and uploads artifact
+ * Generates HTML coverage report, uploads artifact, and sets `html-report-file` output
  *
  * @param {string} mergedCoverageFile - Merged LCOV file path
  * @param {string} artifactName - Name of artifact
@@ -26,6 +27,7 @@ export async function generateHTMLAndUpload(mergedCoverageFile, artifactName, tm
   const tarFile = 'coverage-report.tar.gz';
   await exec.exec('genhtml', args);
   await exec.exec('tar', ['czf', tarFile, htmlReportDir], { cwd: tmpPath });
+  core.setOutput('html-report-file', path.join(tmpPath, tarFile));
 
   artifact.create().uploadArtifact(artifactName, [path.join(tmpPath, tarFile)], tmpPath, { continueOnError: false });
 }

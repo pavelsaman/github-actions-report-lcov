@@ -48,6 +48,8 @@ outputs:
     description: Total function coverage.
   merged-lcov-file:
     description: Path to merged LCOV file.
+  html-report-file:
+    description: Path to generated HTML report.
 
 runs:
   using: 'node16'
