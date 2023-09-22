@@ -42,7 +42,7 @@ jobs:
     # Linux and macOS runners are supported
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # if running on Windows, please install `lcov` here
       # tar may need to be installed on Windows as well
