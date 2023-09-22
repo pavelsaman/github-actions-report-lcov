@@ -30,6 +30,7 @@ This GitHub Action reports code coverage from LCOV files. This action includes:
 - `total-function-coverage`: Total function coverage.
 - `merged-lcov-file`: Path to merged LCOV file.
 - `html-report-file`: Path to generated HTML report.
+- `html-report-dir`: Path to dir with HTML report.
 
 ### Example usage
 
