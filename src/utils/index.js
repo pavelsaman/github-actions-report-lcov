@@ -19,7 +19,7 @@ export async function listFiles(path) {
 }
 
 /**
- * Builds the PR comment header section
+ * Builds comment header section
  *
  * @param {boolean} isMinimumCoverage - If minimum coverage is reached
  * @param {object} sha - The object with short and full sha
@@ -34,7 +34,7 @@ export function buildHeader(isMinimumCoverageReached, sha) {
 }
 
 /**
- * Builds the PR comment body string
+ * Builds comment body string
  *
  * @param {object} params Parameters including header, coverageData, and errorMessage
  * @returns {Promise<string>} The message body markdown
