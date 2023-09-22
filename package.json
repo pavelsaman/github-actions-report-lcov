@@ -10,7 +10,7 @@
     "lint:check": "biome check src/",
     "format": "biome format --write src/",
     "format:check": "biome format src/",
-    "build": "esbuild --bundle src/main.js --outfile=dist/main.js --minify --platform=node --target=node16",
+    "build": "esbuild --bundle src/main.js --outfile=dist/main.js --minify --platform=node --target=node20",
     "all": "npm run format && npm run lint && npm run build"
   },
   "repository": {
