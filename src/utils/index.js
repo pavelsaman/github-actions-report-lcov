@@ -4,6 +4,7 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as glob from '@actions/glob';
 import { config, inputs } from '../config';
+import { runningInPullRequest } from '../github';
 import { createDetailTable, createSummaryTable } from '../github/tables';
 
 /**
@@ -26,7 +27,9 @@ export async function listFiles(path) {
  */
 export function buildHeader(isMinimumCoverageReached, sha) {
   const emoji = isMinimumCoverageReached ? '' : config.failureEmoji;
-  const commitLink = `[<code>${sha.short}</code>](${github.context.payload.pull_request.number}/commits/${sha.full})`;
+  const commitLink = runningInPullRequest()
+    ? `[<code>${sha.short}</code>](${github.context.payload.pull_request.number}/commits/${sha.full})`
+    : `[<code>${sha.short}</code>]`;
   return `## ${emoji} Code coverage of commit ${commitLink}\n\n`;
 }
 
