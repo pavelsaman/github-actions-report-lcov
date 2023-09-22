@@ -63,7 +63,7 @@ jobs:
 
 The action works out of the box with Linux and macOS runners. If you want to use it on Windows runners, please install `lcov` before running this action in a workflow.
 
-## Contribution
+## Contributing
 
 Initial setup:
 
