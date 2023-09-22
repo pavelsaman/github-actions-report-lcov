@@ -29,7 +29,7 @@ export function buildHeader(isMinimumCoverageReached, sha) {
   const emoji = isMinimumCoverageReached ? '' : config.failureEmoji;
   const commitLink = runningInPullRequest()
     ? `[<code>${sha.short}</code>](${github.context.payload.pull_request.number}/commits/${sha.full})`
-    : `<code>${sha.short}</code>`;
+    : `[<code>${sha.short}</code>](${config.repositoryUrl}/commit/${sha.full})`;
   return `## ${emoji} Code coverage of commit ${commitLink}\n\n`;
 }
 

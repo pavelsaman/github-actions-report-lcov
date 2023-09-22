@@ -16,6 +16,7 @@ export const config = {
     { data: 'Function cov', header: true },
   ],
   urlToFileAtCommit: `${repositoryUrl}/blob/{commit}/{filePath}`,
+  repositoryUrl,
 };
 
 export const inputs = {
