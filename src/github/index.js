@@ -28,7 +28,7 @@ async function getExistingPullRequestComment(octokitInstance) {
  * @returns {{full: string, short: string}} The commit object with full and short SHA
  */
 export function sha() {
-  const full = github.context.payload.pull_request.head.sha;
+  const full = github.context.payload.pull_request?.head?.sha ?? github.context.sha;
   return {
     full,
     short: full.substr(0, 7),
