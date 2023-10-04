@@ -27,9 +27,7 @@ async function run() {
     totalCoverages = totalCoverage(mergedCoverageFile);
   }
 
-  const body = buildMessageBody({
-    coverageData: totalCoverages,
-  });
+  const body = buildMessageBody(totalCoverages);
   if (inputs.gitHubToken && inputs.commentOnPR && runningInPullRequest()) {
     commentOnPR({
       octokit,

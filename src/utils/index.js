@@ -22,7 +22,6 @@ export async function listFiles(path) {
  * Builds comment header section
  *
  * @param {boolean} isMinimumCoverage - If minimum coverage is reached
- * @param {object} sha - The object with short and full sha
  * @returns {string} The header markdown
  */
 function buildHeader(isMinimumCoverageReached) {
@@ -37,12 +36,10 @@ function buildHeader(isMinimumCoverageReached) {
 /**
  * Builds comment body string
  *
- * @param {object} params Parameters including header, coverageData, and errorMessage
+ * @param {object} coverageData - Object containing total coverage percentages
  * @returns {Promise<string>} The message body markdown
  */
-export function buildMessageBody(params) {
-  const { coverageData } = params;
-
+export function buildMessageBody(coverageData) {
   const coverageInfo = findFailedCoverages(coverageData);
   const isMinimumCoverageReached = Object.values(coverageInfo).every((c) => c.isMinimumCoverageReached);
 
