@@ -3,17 +3,9 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import totalCoverage from 'total-coverage';
 import { config, inputs } from './config';
-import { commentOnPR, getChangedFilenames, postToSummary, runningInPullRequest, sha } from './github';
+import { commentOnPR, getChangedFilenames, postToSummary, runningInPullRequest } from './github';
 import { generateHTMLAndUpload, mergeCoverages } from './lcov';
-import {
-  buildHeader,
-  buildMessageBody,
-  createErrorMessageAndSetFailedStatus,
-  createTempDir,
-  findFailedCoverages,
-  listFiles,
-  setCoverageOutputs,
-} from './utils';
+import { buildMessageBody, createTempDir, listFiles, setCoverageOutputs } from './utils';
 
 async function run() {
   const coverageFiles = await listFiles(inputs.coverageFilesPattern);
@@ -34,13 +26,9 @@ async function run() {
   } else {
     totalCoverages = totalCoverage(mergedCoverageFile);
   }
-  const coverageInfo = findFailedCoverages(totalCoverages);
-  const isMinimumCoverageReached = Object.values(coverageInfo).every((c) => c.isMinimumCoverageReached);
 
   const body = buildMessageBody({
-    header: buildHeader(isMinimumCoverageReached, sha()),
     coverageData: totalCoverages,
-    errorMessage: createErrorMessageAndSetFailedStatus(coverageInfo),
   });
   if (inputs.gitHubToken && inputs.commentOnPR && runningInPullRequest()) {
     commentOnPR({

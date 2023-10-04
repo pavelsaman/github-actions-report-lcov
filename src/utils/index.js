@@ -4,7 +4,7 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as glob from '@actions/glob';
 import { config, inputs } from '../config';
-import { runningInPullRequest } from '../github';
+import { runningInPullRequest, sha } from '../github';
 import { createDetailTable, createSummaryTable } from '../github/tables';
 
 /**
@@ -25,11 +25,12 @@ export async function listFiles(path) {
  * @param {object} sha - The object with short and full sha
  * @returns {string} The header markdown
  */
-export function buildHeader(isMinimumCoverageReached, sha) {
+function buildHeader(isMinimumCoverageReached) {
+  const shas = sha();
   const emoji = isMinimumCoverageReached ? '' : config.failureEmoji;
   const commitLink = runningInPullRequest()
-    ? `[<code>${sha.short}</code>](${github.context.payload.pull_request.number}/commits/${sha.full})`
-    : `[<code>${sha.short}</code>](${config.repositoryUrl}/commit/${sha.full})`;
+    ? `[<code>${shas.short}</code>](${github.context.payload.pull_request.number}/commits/${shas.full})`
+    : `[<code>${shas.short}</code>](${config.repositoryUrl}/commit/${shas.full})`;
   return `## ${emoji} Code coverage of commit ${commitLink}\n\n`;
 }
 
@@ -40,9 +41,14 @@ export function buildHeader(isMinimumCoverageReached, sha) {
  * @returns {Promise<string>} The message body markdown
  */
 export function buildMessageBody(params) {
-  const { header, coverageData, errorMessage } = params;
+  const { coverageData } = params;
 
+  const coverageInfo = findFailedCoverages(coverageData);
+  const isMinimumCoverageReached = Object.values(coverageInfo).every((c) => c.isMinimumCoverageReached);
+
+  const header = buildHeader(isMinimumCoverageReached);
   const summaryTable = createSummaryTable(coverageData);
+  const errorMessage = createErrorMessageAndSetFailedStatus(coverageInfo);
   const detailTable = createDetailTable(coverageData);
 
   return `${header}${summaryTable}${errorMessage}${detailTable}`;
