@@ -25,7 +25,15 @@
         "noUndeclaredVariables": "error",
         "noUnusedVariables": "error"
       },
-      "recommended": true
+      "recommended": true,
+      "nursery": {
+        "noExcessiveComplexity": {
+          "level": "error",
+          "options": {
+            "maxAllowedComplexity": 6
+          }
+        }
+      }
     }
   },
   "organizeImports": {
