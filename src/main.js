@@ -5,16 +5,11 @@ import totalCoverage from 'total-coverage';
 import { config, inputs } from './config';
 import { commentOnPR, getChangedFilenames, postToSummary, runningInPullRequest } from './github';
 import { generateHTMLAndUpload, mergeCoverages } from './lcov';
-import { buildMessageBody, createTempDir, listFiles, setCoverageOutputs } from './utils';
+import { buildMessageBody, createTempDir, getCoverageFiles, setCoverageOutputs } from './utils';
 
 async function run() {
-  const coverageFiles = await listFiles(inputs.coverageFilesPattern);
-  if (!coverageFiles.length) {
-    core.error(`${config.action_msg_prefix} no coverage lcov files found with pattern ${inputs.coverageFilesPattern}`);
-    process.exit(1);
-  }
+  const coverageFiles = await getCoverageFiles();
   const tmpDir = createTempDir();
-
   const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpDir);
   core.setOutput('merged-lcov-file', mergedCoverageFile);
 
@@ -37,7 +32,6 @@ async function run() {
   }
 
   postToSummary(body);
-
   setCoverageOutputs(totalCoverages);
 
   if (inputs.artifactName) {

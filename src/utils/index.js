@@ -8,17 +8,6 @@ import { runningInPullRequest, sha } from '../github';
 import { createDetailTable, createSummaryTable } from '../github/tables';
 
 /**
- * Lists files matching a glob pattern.
- *
- * @param {string} path - Pattern to match coverage LCOV files
- * @returns {Promise<string[]>} Array of matching file paths
- */
-export async function listFiles(path) {
-  const globber = await glob.create(path, { followSymbolicLinks: false, matchDirectories: false });
-  return await globber.glob();
-}
-
-/**
  * Builds comment header section
  *
  * @param {boolean} isMinimumCoverage - If minimum coverage is reached
@@ -136,4 +125,29 @@ export function setCoverageOutputs(totalCoverages) {
   core.setOutput('total-line-coverage', totalCoverages.totalLineCov);
   core.setOutput('total-branch-coverage', totalCoverages.totalBranchCov);
   core.setOutput('total-function-coverage', totalCoverages.totalFunctionCov);
+}
+
+/**
+ * Lists files matching a glob pattern.
+ *
+ * @param {string} path - Pattern to match coverage LCOV files
+ * @returns {Promise<string[]>} Array of matching file paths
+ */
+async function listFiles(path) {
+  const globber = await glob.create(path, { followSymbolicLinks: false, matchDirectories: false });
+  return await globber.glob();
+}
+
+/**
+ * Get the coverage files matching the pattern. Exit with exit code 1 if no coverafe files were found.
+ *
+ * @returns {Promise<string[]>} The paths to the coverage files.
+ */
+export async function getCoverageFiles() {
+  const coverageFiles = await listFiles(inputs.coverageFilesPattern);
+  if (!coverageFiles.length) {
+    core.error(`${config.action_msg_prefix} no coverage lcov files found with pattern ${inputs.coverageFilesPattern}`);
+    process.exit(1);
+  }
+  return coverageFiles;
 }
