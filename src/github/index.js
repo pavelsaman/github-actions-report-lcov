@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import { config } from '../config';
+import { config, inputs } from '../config';
 
 /**
  * Gets existing coverage comment on pull request
@@ -110,4 +110,15 @@ export async function postToSummary(message) {
   await core.summary.emptyBuffer().addRaw(message).write();
   // restore summary buffer
   core.summary.emptyBuffer().addRaw(summaryBuffer);
+}
+
+/**
+ * Initializes an Octokit client if conditions are met.
+ *
+ * @returns {Octokit} The Octokit instance, or undefined if not initialized.
+ */
+export function getOctokit() {
+  if (inputs.gitHubToken && runningInPullRequest()) {
+    return github.getOctokit(inputs.gitHubToken);
+  }
 }

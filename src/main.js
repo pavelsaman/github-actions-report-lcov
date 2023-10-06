@@ -2,16 +2,9 @@ import { execSync } from 'child_process';
 import * as core from '@actions/core';
 import totalCoverage from 'total-coverage';
 import { config, inputs } from './config';
-import { commentOnPR, getChangedFilenames, postToSummary } from './github';
+import { commentOnPR, getChangedFilenames, getOctokit, postToSummary } from './github';
 import { generateHTMLAndUpload, mergeCoverages } from './lcov';
-import {
-  buildMessageBody,
-  createTempDir,
-  getCoverageFiles,
-  getOctokit,
-  setCoverageOutputs,
-  shouldCommentOnPr,
-} from './utils';
+import { buildMessageBody, createTempDir, getCoverageFiles, setCoverageOutputs, shouldCommentOnPr } from './utils';
 
 async function run() {
   const coverageFiles = await getCoverageFiles();

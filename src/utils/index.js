@@ -160,14 +160,3 @@ export async function getCoverageFiles() {
 export function shouldCommentOnPr() {
   return inputs.gitHubToken && inputs.commentOnPR && runningInPullRequest();
 }
-
-/**
- * Initializes an Octokit client if conditions are met.
- *
- * @returns {Octokit} The Octokit instance, or undefined if not initialized.
- */
-export function getOctokit() {
-  if (inputs.gitHubToken && runningInPullRequest()) {
-    return github.getOctokit(inputs.gitHubToken);
-  }
-}
