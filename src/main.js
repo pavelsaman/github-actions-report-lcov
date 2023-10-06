@@ -1,29 +1,30 @@
 import { execSync } from 'child_process';
 import * as core from '@actions/core';
-import * as github from '@actions/github';
 import totalCoverage from 'total-coverage';
 import { config, inputs } from './config';
-import { commentOnPR, getChangedFilenames, postToSummary, runningInPullRequest } from './github';
+import { commentOnPR, getChangedFilenames, postToSummary } from './github';
 import { generateHTMLAndUpload, mergeCoverages } from './lcov';
-import { buildMessageBody, createTempDir, getCoverageFiles, setCoverageOutputs } from './utils';
+import {
+  buildMessageBody,
+  createTempDir,
+  getCoverageFiles,
+  getOctokit,
+  setCoverageOutputs,
+  shouldCommentOnPr,
+} from './utils';
 
 async function run() {
   const coverageFiles = await getCoverageFiles();
   const tmpDir = createTempDir();
   const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpDir);
+
   core.setOutput('merged-lcov-file', mergedCoverageFile);
 
-  let octokit;
-  let totalCoverages;
-  if (inputs.gitHubToken && runningInPullRequest()) {
-    octokit = github.getOctokit(inputs.gitHubToken);
-    totalCoverages = totalCoverage(mergedCoverageFile, await getChangedFilenames(octokit));
-  } else {
-    totalCoverages = totalCoverage(mergedCoverageFile);
-  }
+  const octokit = getOctokit();
+  const totalCoverages = totalCoverage(mergedCoverageFile, await getChangedFilenames(octokit));
 
   const body = buildMessageBody(totalCoverages);
-  if (inputs.gitHubToken && inputs.commentOnPR && runningInPullRequest()) {
+  if (octokit && shouldCommentOnPr()) {
     commentOnPR({
       octokit,
       updateComment: inputs.updateComment,

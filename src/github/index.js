@@ -42,6 +42,10 @@ export function sha() {
  * @returns {Promise<string[]>} Changed filenames
  */
 export async function getChangedFilenames(octokitInstance) {
+  if (!octokitInstance) {
+    return [];
+  }
+
   try {
     const listFilesOptions = octokitInstance.rest.pulls.listFiles.endpoint.merge({
       owner: github.context.repo.owner,

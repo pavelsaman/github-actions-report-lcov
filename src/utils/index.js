@@ -151,3 +151,23 @@ export async function getCoverageFiles() {
   }
   return coverageFiles;
 }
+
+/**
+ * Checks if conditions are met to comment on a PR.
+ *
+ * @returns {boolean} True if should comment on PR, false otherwise.
+ */
+export function shouldCommentOnPr() {
+  return inputs.gitHubToken && inputs.commentOnPR && runningInPullRequest();
+}
+
+/**
+ * Initializes an Octokit client if conditions are met.
+ *
+ * @returns {Octokit} The Octokit instance, or undefined if not initialized.
+ */
+export function getOctokit() {
+  if (inputs.gitHubToken && runningInPullRequest()) {
+    return github.getOctokit(inputs.gitHubToken);
+  }
+}
