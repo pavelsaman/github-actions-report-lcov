@@ -30,7 +30,7 @@
         "noExcessiveComplexity": {
           "level": "error",
           "options": {
-            "maxAllowedComplexity": 6
+            "maxAllowedComplexity": 5
           }
         }
       }
