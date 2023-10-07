@@ -3,7 +3,7 @@ import * as github from '@actions/github';
 import { config } from '../config';
 
 /**
- * Creates a detail table showing coverage data for each file
+ * Creates a detail table showing coverage data for each file.
  *
  * @param {Object} coverageData - The coverage data object
  * @returns {string} The formatted detail table as a string
@@ -48,7 +48,7 @@ export function createDetailTable(coverageData) {
 }
 
 /**
- * Creates a summary table showing total coverage rates
+ * Creates a summary table showing total coverage rates.
  *
  * @param {Object} coverageData - The coverage data object
  * @returns {string} The formatted summary table as a string
@@ -71,7 +71,7 @@ export function createSummaryTable(coverageData) {
 }
 
 /**
- * Creates a URL to view a file at a specific commit in GitHub
+ * Creates a URL to view a file at a specific commit in GitHub.
  *
  * @param {string} file - The path to the file in the repository
  * @returns {string} The URL to view the file

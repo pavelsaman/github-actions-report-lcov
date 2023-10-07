@@ -7,7 +7,7 @@ import { createDetailTable, createSummaryTable } from '../github/tables';
 import { firstCharToUpperCase } from '../utils';
 
 /**
- * Builds comment header section
+ * Builds comment header section.
  *
  * @param {boolean} isMinimumCoverage - If minimum coverage is reached
  * @returns {string} The header markdown
@@ -22,10 +22,10 @@ function buildHeader(isMinimumCoverageReached) {
 }
 
 /**
- * Builds comment body string
+ * Builds comment body string.
  *
  * @param {object} coverageData - Object containing total coverage percentages
- * @returns {Promise<string>} The message body markdown
+ * @returns {string} The message body markdown
  */
 export function buildMessageBody(coverageData) {
   const coverageInfo = findFailedCoverages(coverageData);
@@ -40,7 +40,7 @@ export function buildMessageBody(coverageData) {
 }
 
 /**
- * Creates an error message for the pull request and sets failed status
+ * Creates an error message for the pull request and sets failed status.
  *
  * @param {object} coveragesInfo - Object containing coverage info
  * @returns {string} Error message string
@@ -65,7 +65,7 @@ export function createErrorMessageAndSetFailedStatus(coveragesInfo) {
 /**
  * Checks if conditions are met to comment on a PR.
  *
- * @returns {boolean} True if should comment on PR, false otherwise.
+ * @returns {boolean} True if should comment on PR, false otherwise
  */
 export function shouldCommentOnPr() {
   return inputs.gitHubToken && inputs.commentOnPR && runningInPullRequest();

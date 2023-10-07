@@ -1,19 +1,24 @@
+import { execSync } from 'child_process';
 import * as path from 'path';
-import * as artifact from '@actions/artifact';
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
-import { config } from '../config';
+import { config, inputs } from '../config';
 
 /**
- * Generates HTML coverage report, uploads artifact, and sets `html-report-file` and `html-report-dir` output
+ * Generates an HTML coverage report from a LCOV coverage file.
  *
- * @param {string} mergedCoverageFile - Merged LCOV file path
- * @param {string} artifactName - Name of artifact
- * @param {string} tmpPath - Temp directory path
+ * @param {string} artifactName - The name to give the artifact
+ * @param {string} mergedCoverageFile - Path to the merged LCOV coverage file
+ * @param {string} tmpDir - The temp directory containing report
+ * @returns {Promise<{htmlReportFile: string, htmlReportDir: string}>}
  */
-export async function generateHTMLAndUpload(mergedCoverageFile, artifactName, tmpPath) {
+export async function generateHTMLReport(artifactName, mergedCoverageFile, tmpDir) {
+  if (!artifactName) {
+    return {};
+  }
+
   const htmlReportDir = 'html';
-  const artifactPath = path.join(tmpPath, htmlReportDir);
+  const artifactPath = path.join(tmpDir, htmlReportDir);
 
   const args = [
     mergedCoverageFile,
@@ -26,15 +31,16 @@ export async function generateHTMLAndUpload(mergedCoverageFile, artifactName, tm
 
   const tarFile = 'coverage-report.tar.gz';
   await exec.exec('genhtml', args);
-  await exec.exec('tar', ['czf', tarFile, htmlReportDir], { cwd: tmpPath });
-  core.setOutput('html-report-file', path.join(tmpPath, tarFile));
-  core.setOutput('html-report-dir', artifactPath);
+  await exec.exec('tar', ['czf', tarFile, htmlReportDir], { cwd: tmpDir });
 
-  artifact.create().uploadArtifact(artifactName, [path.join(tmpPath, tarFile)], tmpPath, { continueOnError: false });
+  return {
+    htmlReportFile: path.join(tmpDir, tarFile),
+    htmlReportDir: artifactPath,
+  };
 }
 
 /**
- * Merges coverage data files into a single file
+ * Merges coverage data files into a single file.
  *
  * @param {string[]} coverageFiles - List of coverage files
  * @param {string} tmpPath - Temp directory path
@@ -49,4 +55,37 @@ export async function mergeCoverages(coverageFiles, tmpPath) {
   await exec.exec('lcov', [...args, ...config.common_lcov_args]);
 
   return mergedCoverageFile;
+}
+
+/**
+ * Installs lcov code coverage tool if needed.
+ *
+ * Exits with status code 1 on error.
+ */
+export function installLcovIfNeeded() {
+  if (!inputs.installLcov) {
+    return;
+  }
+
+  try {
+    console.log('Installing lcov');
+
+    const platform = process.env.RUNNER_OS;
+    if (platform === 'Linux') {
+      execSync('sudo apt-get update');
+      execSync('sudo apt-get install --assume-yes lcov');
+    } else if (platform === 'macOS') {
+      execSync('brew install lcov');
+    }
+  } catch (error) {
+    core.setFailed(`${config.action_msg_prefix} ${error.message}`);
+    process.exit(core.ExitCode.Failure);
+  }
+}
+
+/**
+ * Prints lcov version to console.
+ */
+export function printLcovVersion() {
+  console.log(execSync('lcov --version', { encoding: 'utf-8' }));
 }

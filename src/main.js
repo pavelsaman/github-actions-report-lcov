@@ -1,65 +1,26 @@
-import { execSync } from 'child_process';
-import * as core from '@actions/core';
 import totalCoverage from 'total-coverage';
-import { buildMessageBody, shouldCommentOnPr } from './comments';
-import { config, inputs } from './config';
+import { inputs } from './config';
 import { getCoverageFiles, setCoverageOutputs } from './coverage';
-import { commentOnPR, getChangedFilenames, getOctokit, postToSummary } from './github';
-import { generateHTMLAndUpload, mergeCoverages } from './lcov';
+import { getChangedFilenames, getOctokit, reportCoverages, uploadHTMLReport } from './github';
+import { generateHTMLReport, installLcovIfNeeded, mergeCoverages, printLcovVersion } from './lcov';
 import { createTempDir } from './utils';
 
-async function calculateAndReportCoverages() {
-  const coverageFiles = await getCoverageFiles();
-  const tmpDir = createTempDir();
-  const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpDir);
-
-  core.setOutput('merged-lcov-file', mergedCoverageFile);
+async function main() {
+  installLcovIfNeeded();
+  printLcovVersion();
 
   const octokit = getOctokit();
+
+  const tmpDir = createTempDir();
+  const mergedCoverageFile = await mergeCoverages(await getCoverageFiles(), tmpDir);
+
   const totalCoverages = totalCoverage(mergedCoverageFile, await getChangedFilenames(octokit));
+  reportCoverages(totalCoverages, octokit);
 
-  const body = buildMessageBody(totalCoverages);
-  if (octokit && shouldCommentOnPr()) {
-    commentOnPR({
-      octokit,
-      updateComment: inputs.updateComment,
-      body,
-    });
-  }
+  const { htmlReportFile, htmlReportDir } = await generateHTMLReport(inputs.artifactName, mergedCoverageFile, tmpDir);
+  uploadHTMLReport(inputs.artifactName, htmlReportFile, tmpDir);
 
-  postToSummary(body);
-  setCoverageOutputs(totalCoverages);
-
-  if (inputs.artifactName) {
-    generateHTMLAndUpload(mergedCoverageFile, inputs.artifactName, tmpDir);
-  }
-}
-
-function install() {
-  try {
-    console.log('Installing lcov');
-
-    const platform = process.env.RUNNER_OS;
-    if (platform === 'Linux') {
-      execSync('sudo apt-get update');
-      execSync('sudo apt-get install --assume-yes lcov');
-    } else if (platform === 'macOS') {
-      execSync('brew install lcov');
-    }
-  } catch (error) {
-    core.setFailed(`${config.action_msg_prefix} ${error.message}`);
-  }
-}
-
-function main() {
-  if (inputs.installLcov) {
-    install();
-  }
-
-  const lcovVersion = execSync('lcov --version', { encoding: 'utf-8' });
-  console.log(lcovVersion);
-
-  calculateAndReportCoverages();
+  setCoverageOutputs({ totalCoverages, mergedCoverageFile, htmlReportFile, htmlReportDir });
 }
 
 main();

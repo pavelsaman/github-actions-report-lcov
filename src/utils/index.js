@@ -5,7 +5,7 @@ import * as glob from '@actions/glob';
 import { config } from '../config';
 
 /**
- * Creates a temp directory in the workspace
+ * Creates a temp directory in the workspace. Fails with exit code 1 on error.
  *
  * @returns {string} The temp directory path
  */
@@ -17,12 +17,12 @@ export function createTempDir() {
     return tmpPath;
   } catch (error) {
     core.error(`${config.action_msg_prefix} creating a temp dir failed with: ${error.message}`);
-    process.exit(1);
+    process.exit(core.ExitCode.Failure);
   }
 }
 
 /**
- * Capitalizes the first letter of a word
+ * Capitalizes the first letter of a word.
  *
  * @param {string} word - Word to capitalize
  * @returns {string} Word with first letter capitalized

@@ -1,9 +1,11 @@
+import * as artifact from '@actions/artifact';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
+import { buildMessageBody, shouldCommentOnPr } from '../comments';
 import { config, inputs } from '../config';
 
 /**
- * Gets existing coverage comment on pull request
+ * Gets existing coverage comment on pull request.
  *
  * @param {Object} octokitInstance - Octokit instance
  * @returns {Promise<Object|undefined>} The existing comment object
@@ -23,7 +25,7 @@ async function getExistingPullRequestComment(octokitInstance) {
 }
 
 /**
- * Gets commit SHA information
+ * Gets commit SHA information.
  *
  * @returns {{full: string, short: string}} The commit object with full and short SHA
  */
@@ -36,7 +38,7 @@ export function sha() {
 }
 
 /**
- * Gets changed filenames for a pull request
+ * Gets changed filenames for a pull request.
  *
  * @param {Object} octokitInstance - Octokit instance
  * @returns {Promise<string[]>} Changed filenames
@@ -62,7 +64,7 @@ export async function getChangedFilenames(octokitInstance) {
 }
 
 /**
- * Comments on a pull request
+ * Comments on a pull request.
  *
  * @param {Object} params - Parameters including updateComment, body, Octokit instance
  */
@@ -91,7 +93,7 @@ export async function commentOnPR(params) {
 }
 
 /**
- * Checks if the action is running in a pull request context
+ * Checks if the action is running in a pull request context.
  *
  * @returns {boolean} True if running in PR, false otherwise
  */
@@ -100,7 +102,7 @@ export function runningInPullRequest() {
 }
 
 /**
- * Posts a message to the summary section of the GitHub workflow run
+ * Posts a message to the summary section of the GitHub workflow run.
  *
  * @param {string} message - The message to post to the summary
  */
@@ -115,10 +117,42 @@ export async function postToSummary(message) {
 /**
  * Initializes an Octokit client if conditions are met.
  *
- * @returns {Octokit} The Octokit instance, or undefined if not initialized.
+ * @returns {Octokit} The Octokit instance, or undefined if not initialized
  */
 export function getOctokit() {
   if (inputs.gitHubToken && runningInPullRequest()) {
     return github.getOctokit(inputs.gitHubToken);
+  }
+}
+
+/**
+ * Reports code coverage results.
+ *
+ * @param {number} totalCoverages - The total code coverage percentage
+ * @param {Object} octokit - Octokit SDK instance for GitHub API access
+ */
+export async function reportCoverages(totalCoverages, octokit) {
+  const body = buildMessageBody(totalCoverages);
+  if (octokit && shouldCommentOnPr()) {
+    commentOnPR({
+      octokit,
+      updateComment: inputs.updateComment,
+      body,
+    });
+  }
+  postToSummary(body);
+}
+
+/**
+ * Uploads an HTML report file as a build artifact.
+ *
+ * @param {string} artifactName - The name to give the artifact
+ * @param {string} htmlReportFile - Path to the HTML report file to upload
+ * @param {string} tmpDir - The temp directory containing report
+ * @returns {Promise<void>}
+ */
+export async function uploadHTMLReport(artifactName, htmlReportFile, tmpDir) {
+  if (artifactName && htmlReportFile && tmpDir) {
+    artifact.create().uploadArtifact(artifactName, [htmlReportFile], tmpDir, { continueOnError: false });
   }
 }
