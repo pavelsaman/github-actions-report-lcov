@@ -8,7 +8,7 @@ import { commentOnPR, getChangedFilenames, getOctokit, postToSummary } from './g
 import { generateHTMLAndUpload, mergeCoverages } from './lcov';
 import { createTempDir } from './utils';
 
-async function run() {
+async function calculateAndReportCoverages() {
   const coverageFiles = await getCoverageFiles();
   const tmpDir = createTempDir();
   const mergedCoverageFile = await mergeCoverages(coverageFiles, tmpDir);
@@ -59,7 +59,7 @@ function main() {
   const lcovVersion = execSync('lcov --version', { encoding: 'utf-8' });
   console.log(lcovVersion);
 
-  run();
+  calculateAndReportCoverages();
 }
 
 main();
