@@ -29,14 +29,25 @@ export async function generateHTMLReport(artifactName, mergedCoverageFile, tmpDi
     process.env.GITHUB_WORKSPACE,
   ];
 
-  const tarFile = 'coverage-report.tar.gz';
   await exec.exec('genhtml', args);
-  await exec.exec('tar', ['czf', tarFile, htmlReportDir], { cwd: tmpDir });
+  const tarArchiveName = await createArchive(htmlReportDir, tmpDir);
 
   return {
-    htmlReportFile: path.join(tmpDir, tarFile),
+    htmlReportFile: path.join(tmpDir, tarArchiveName),
     htmlReportDir: artifactPath,
   };
+}
+
+/**
+ * Creates a tar archive of the given directory.
+ *
+ * @param {string} dirToArchive - The directory to archive
+ * @param {string} cwd - The current working directory to run the command from
+ * @returns {Promise<string>} The name of the created archive file
+ */
+async function createArchive(dirToArchive, cwd) {
+  await exec.exec('tar', ['czf', config.tarArchiveName, dirToArchive], { cwd });
+  return config.tarArchiveName;
 }
 
 /**

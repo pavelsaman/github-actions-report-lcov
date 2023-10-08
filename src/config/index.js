@@ -17,6 +17,7 @@ export const config = {
   ],
   urlToFileAtCommit: `${repositoryUrl}/blob/{commit}/{filePath}`,
   repositoryUrl,
+  tarArchiveName: 'coverage-report.tar.gz',
 };
 
 export const inputs = {
