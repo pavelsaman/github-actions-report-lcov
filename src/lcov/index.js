@@ -1,6 +1,5 @@
 import { execSync } from 'child_process';
 import * as path from 'path';
-import * as core from '@actions/core';
 import * as exec from '@actions/exec';
 import { config, inputs } from '../config';
 
@@ -71,7 +70,7 @@ export async function mergeCoverages(coverageFiles, tmpPath) {
 /**
  * Installs lcov code coverage tool if needed.
  *
- * Exits with status code 1 on error.
+ * Throws on error.
  */
 export function installLcovIfNeeded() {
   if (!inputs.installLcov) {
@@ -89,8 +88,7 @@ export function installLcovIfNeeded() {
       execSync('brew install lcov');
     }
   } catch (error) {
-    core.setFailed(`${config.action_msg_prefix} ${error.message}`);
-    process.exit(core.ExitCode.Failure);
+    throw new Error(`${config.action_msg_prefix} ${error.message}`);
   }
 }
 

@@ -1,3 +1,4 @@
+import * as core from '@actions/core';
 import totalCoverage from 'total-coverage';
 import { inputs } from './config';
 import { getCoverageFiles, setCoverageOutputs } from './coverage';
@@ -6,12 +7,23 @@ import { generateHTMLReport, installLcovIfNeeded, mergeCoverages, printLcovVersi
 import { createTempDir } from './utils';
 
 async function main() {
-  installLcovIfNeeded();
+  try {
+    installLcovIfNeeded();
+  } catch (err) {
+    core.error(err.message);
+    process.exit(core.ExitCode.Failure);
+  }
   printLcovVersion();
 
   const octokit = getOctokit();
 
-  const tmpDir = createTempDir();
+  let tmpDir;
+  try {
+    tmpDir = createTempDir();
+  } catch (err) {
+    core.error(err.message);
+    process.exit(core.ExitCode.Failure);
+  }
   const mergedCoverageFile = await mergeCoverages(await getCoverageFiles(), tmpDir);
 
   const totalCoverages = totalCoverage(mergedCoverageFile, await getChangedFilenames(octokit));
