@@ -18,6 +18,7 @@ export const config = {
   urlToFileAtCommit: `${repositoryUrl}/blob/{commit}/{filePath}`,
   repositoryUrl,
   tarArchiveName: 'coverage-report.tar.gz',
+  workflowUrl: `${repositoryUrl}/actions/runs/${process.env?.GITHUB_RUN_ID}/attempts/${process.env?.GITHUB_RUN_ATTEMPT}`,
 };
 
 export const inputs = {

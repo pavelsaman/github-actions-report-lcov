@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import { config } from '../config';
+import { workflowUrl } from '.';
+import { config, inputs } from '../config';
 
 /**
  * Creates a detail table showing coverage data for each file.
@@ -39,12 +40,15 @@ export function createDetailTable(coverageData) {
   // restore summary buffer
   core.summary.emptyBuffer().addRaw(summaryBuffer);
 
+  const finalNote = `:arrow_forward: Detailed html coverage report can be found in GH artifact "**${
+    inputs.artifactName
+  }**" on the [workflow summary page](${workflowUrl()}).`;
   const detailsHaveManyLines = Object.keys(coverageData.files).length > config.collapseDetailsIfLines;
   if (detailsHaveManyLines) {
-    return `${heading}<details><summary>Click to see details</summary>${table}</details>`;
+    return `${heading}<details><summary>Click to see details</summary>${table}${finalNote}</details>`;
   }
 
-  return `${heading}${table}`;
+  return `${heading}${table}${finalNote}`;
 }
 
 /**

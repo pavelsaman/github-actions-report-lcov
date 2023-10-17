@@ -156,3 +156,15 @@ export async function uploadHTMLReport(artifactName, htmlReportFile, tmpDir) {
     artifact.create().uploadArtifact(artifactName, [htmlReportFile], tmpDir, { continueOnError: false });
   }
 }
+
+/**
+ * Returns current workflow URL.
+ *
+ * @returns {string} The workflow URL
+ */
+export function workflowUrl() {
+  return config.workflowUrl
+    .replace('{project}', github.context.repo.repo)
+    .replace('{runId}', github.context.runId.toString())
+    .replace('{attemptId}', process.env.GITHUB_RUN_ATTEMPT ?? '1');
+}
