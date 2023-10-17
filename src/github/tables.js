@@ -40,7 +40,7 @@ export function createDetailTable(coverageData) {
   // restore summary buffer
   core.summary.emptyBuffer().addRaw(summaryBuffer);
 
-  const finalNote = `:arrow_forward: Detailed html coverage report can be found in GH artifact "**${
+  const finalNote = `:information_source: Detailed html coverage report can be found in GH artifact "**${
     inputs.artifactName
   }**" on the [workflow summary page](${workflowUrl()}).`;
   const detailsHaveManyLines = Object.keys(coverageData.files).length > config.collapseDetailsIfLines;
