@@ -1,0 +1,32 @@
+version: 2
+registries:
+  npm-github:
+    type: npm-registry
+    url: https://npm.pkg.github.com
+    token: ${{ secrets.SLIDO_BOT_TOKEN }}
+updates:
+  # CI/CD
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    commit-message:
+      prefix: 'ci'
+    labels:
+      - 'CI'
+    assignees:
+      - 'pavelsaman'
+    open-pull-requests-limit: 10
+  # root
+  - package-ecosystem: 'npm'
+    registries:
+      - npm-github
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    commit-message:
+      prefix: 'deps'
+    labels:
+      - 'dependencies'
+    assignees:
+      - 'pavelsaman'
