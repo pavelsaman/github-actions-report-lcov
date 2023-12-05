@@ -41,7 +41,7 @@
     "total-coverage": "^1.0.7"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.4.0",
+    "@biomejs/biome": "1.4.1",
     "esbuild": "^0.19.8"
   }
 }
