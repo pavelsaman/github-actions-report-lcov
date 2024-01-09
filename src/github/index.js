@@ -1,4 +1,4 @@
-import * as artifact from '@actions/artifact';
+import { DefaultArtifactClient } from '@actions/artifact';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { buildMessageBody, shouldCommentOnPr } from '../comments';
@@ -153,7 +153,12 @@ export async function reportCoverages(totalCoverages, octokit) {
  */
 export async function uploadHTMLReport(artifactName, htmlReportFile, tmpDir) {
   if (artifactName && htmlReportFile && tmpDir) {
-    artifact.create().uploadArtifact(artifactName, [htmlReportFile], tmpDir, { continueOnError: false });
+    const artifactClient = new DefaultArtifactClient();
+    try {
+      await artifactClient.uploadArtifact(artifactName, [htmlReportFile], tmpDir);
+    } catch (err) {
+      core.warning(`There's an error when uploading coverage artifact: ${err?.message}`);
+    }
   }
 }
 
