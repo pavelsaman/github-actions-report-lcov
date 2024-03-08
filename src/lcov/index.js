@@ -86,6 +86,8 @@ export function installLcovIfNeeded() {
       execSync('sudo apt-get install --assume-yes lcov');
     } else if (platform === 'macOS') {
       execSync('brew install lcov');
+    } else {
+      console.log('Unsupported platform. Lcov not installed.');
     }
   } catch (error) {
     throw new Error(`${config.action_msg_prefix} ${error.message}`);
