@@ -1,5 +1,5 @@
-import { execSync } from 'child_process';
-import * as path from 'path';
+import { execSync } from 'node:child_process';
+import * as path from 'node:path';
 import * as exec from '@actions/exec';
 import { config, inputs } from '../config';
 
