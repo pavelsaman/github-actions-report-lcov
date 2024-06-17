@@ -6,7 +6,7 @@
   "scripts": {
     "install:git:hooks": "cp git-hooks/* .git/hooks/ && chmod +x .git/hooks/*[^.sample]",
     "preinstall": "npm run install:git:hooks",
-    "lint": "biome check --apply src/",
+    "lint": "biome check --write src/",
     "lint:check": "biome check src/",
     "format": "biome format --write src/",
     "format:check": "biome format src/",
