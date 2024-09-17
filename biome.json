@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.1/schema.json",
+  "$schema": "https://biomejs.dev/schemas/1.9.1/schema.json",
   "files": {
     "ignore": ["./dist", "./lib"]
   },
@@ -34,7 +34,8 @@
         "all": true,
         "noUndeclaredVariables": "error",
         "noUnusedVariables": "error",
-        "noNodejsModules": "off"
+        "noNodejsModules": "off",
+        "useImportExtensions": "off"
       },
       "recommended": true
     }
