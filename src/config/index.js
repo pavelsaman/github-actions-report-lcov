@@ -4,7 +4,7 @@ const repositoryUrl = `${process.env?.GITHUB_SERVER_URL}/${process.env?.GITHUB_R
 
 export const config = {
   newline: /\r?\n/,
-  common_lcov_args: ['--rc', 'lcov_branch_coverage=1', '--keep-going'],
+  common_lcov_args: ['--quiet', '--branch-coverage', '--function-coverage', '--keep-going'],
   action_msg_prefix: 'code coverage gh action:',
   failureEmoji: ':no_entry:',
   collapseDetailsIfLines: 5,
